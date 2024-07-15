@@ -59,7 +59,7 @@ export function UserProfileView() {
         heading="Profile"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'User', href: paths.dashboard.user.root },
+          { name: 'Card', href: paths.dashboard.user.cards },
           { name: user?.displayName },
         ]}
         sx={{ mb: { xs: 3, md: 5 } }}

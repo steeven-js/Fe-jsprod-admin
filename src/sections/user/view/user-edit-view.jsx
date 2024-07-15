@@ -55,7 +55,7 @@ export function UserEditView() {
         heading="Edit"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'User', href: paths.dashboard.user.root },
+          { name: 'Card', href: paths.dashboard.user.cards },
           { name: userData?.name || 'Loading...' },
         ]}
         sx={{ mb: { xs: 3, md: 5 } }}

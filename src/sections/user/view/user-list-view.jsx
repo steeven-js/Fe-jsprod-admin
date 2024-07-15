@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getDocs, collection } from 'firebase/firestore';
+import { getDocs, collection, deleteDoc, doc } from 'firebase/firestore';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -68,42 +68,43 @@ export function UserListView() {
 
   const confirm = useBoolean();
 
+  // Etat pour stocker les données des utilisateurs
+  const [tableData, setTableData] = useState([]);
+
   // ==========================================================
   // Firebase: Fetch and Log Users
   // ==========================================================
   useEffect(() => {
     const fetchAndLogUsers = async () => {
       try {
-        // Reference to the 'users' collection
+        // Référence à la collection 'users'
         const usersRef = collection(db, 'users');
 
-        // Fetch all documents from the 'users' collection
+        // Récupère tous les documents de la collection 'users'
         const querySnapshot = await getDocs(usersRef);
 
-        // Create an array to store user data
+        // Crée un tableau pour stocker les données des utilisateurs
         const users = [];
 
-        // Iterate through each document and log the data
+        // Itère à travers chaque document et log les données
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           // console.log(doc.id, '=>', data);
           users.push({ id: doc.id, ...data });
         });
 
-        // Update state with the fetched user data
-        setUserData(users);
+        // Met à jour l'état avec les données des utilisateurs récupérées
+        setTableData(users);
       } catch (error) {
-        // Log an error if fetching users fails
+        // Log une erreur si la récupération des utilisateurs échoue
         console.error('Error fetching users:', error);
       }
     };
 
-    // Call the function to fetch and log users
+    // Appelle la fonction pour récupérer et log les utilisateurs
     fetchAndLogUsers();
-  }, []); // Empty array [] ensures this effect runs only once after the component mounts
+  }, []); // Le tableau vide [] garantit que cet effet se déclenche uniquement une fois après le montage du composant
   // ==========================================================
-
-  const [tableData, setUserData] = useState([]);
 
   const filters = useSetState({ name: '', role: [], status: 'all' });
 
@@ -124,6 +125,8 @@ export function UserListView() {
     (id) => {
       const deleteRow = tableData.filter((row) => row.id !== id);
 
+      console.log('Delete row id:', id);
+
       toast.success('Delete success!');
 
       setTableData(deleteRow);
@@ -133,11 +136,32 @@ export function UserListView() {
     [dataInPage.length, table, tableData]
   );
 
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+  // Fonction pour supprimer les utilisateurs par ID
+  const deleteUsersByIds = async (ids) => {
+    try {
+      const deletePromises = ids.map((id) => deleteDoc(doc(db, 'users', id)));
+      await Promise.all(deletePromises);
+      toast.success('Delete success!');
+    } catch (error) {
+      console.error('Error deleting users:', error);
+      toast.error('Delete failed!');
+    }
+  };
 
-    toast.success('Delete success!');
+  // Gestionnaire de suppression de lignes
+  const handleDeleteRows = useCallback(async () => {
+    const selectedIds = table.selected;
 
+    // Filtre les données de la table pour conserver seulement celles non sélectionnées
+    const deleteRows = tableData.filter((row) => !selectedIds.includes(row.id));
+
+    console.log('deleteRows:', deleteRows);
+    console.log('Delete rows id:', selectedIds);
+
+    // Appel de la fonction pour supprimer les utilisateurs
+    await deleteUsersByIds(selectedIds);
+
+    // Met à jour les données de la table après suppression
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -168,7 +192,7 @@ export function UserListView() {
           heading="List"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'User', href: paths.dashboard.user.root },
+            { name: 'Card', href: paths.dashboard.user.cards },
             { name: 'List' },
           ]}
           action={
