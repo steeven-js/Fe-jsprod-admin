@@ -1,5 +1,5 @@
 import { z as zod } from 'zod';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo, useEffect, useCallback } from 'react';
 import { doc, setDoc, collection } from 'firebase/firestore';
@@ -43,13 +43,16 @@ export const NewPostSchema = zod.object({
   // Not required
   metaTitle: zod.string(),
   metaDescription: zod.string(),
-  commentsEnabled: zod.boolean(),
 });
 
 // ----------------------------------------------------------------------
 
 export function PostNewEditForm({ currentPost }) {
+  // Obtenir les information de l'utilisateur actuel
+  console.log('auth.currentUser uid', auth.currentUser.uid);
+
   const router = useRouter();
+
   const preview = useBoolean();
 
   const defaultValues = useMemo(
@@ -62,8 +65,6 @@ export function PostNewEditForm({ currentPost }) {
       metaKeywords: currentPost?.metaKeywords || [],
       metaTitle: currentPost?.metaTitle || '',
       metaDescription: currentPost?.metaDescription || '',
-      commentsEnabled: true,
-      publish: true,
     }),
     [currentPost]
   );
@@ -73,7 +74,6 @@ export function PostNewEditForm({ currentPost }) {
     resolver: zodResolver(NewPostSchema),
     defaultValues,
   });
-
   const {
     reset,
     watch,
@@ -88,6 +88,12 @@ export function PostNewEditForm({ currentPost }) {
   }, [currentPost, reset, defaultValues]);
 
   const values = watch();
+
+  useEffect(() => {
+    if (currentPost) {
+      reset(defaultValues);
+    }
+  }, [currentPost, defaultValues, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -117,10 +123,10 @@ export function PostNewEditForm({ currentPost }) {
         ],
       };
 
-      const postsRef = collection(db, 'posts');
-      const newPostRef = currentPost?.id ? doc(postsRef, currentPost.id) : doc(postsRef);
+      const usersRef = collection(db, 'posts');
+      const newUserRef = currentPost?.id ? doc(usersRef, currentPost.id) : doc(usersRef);
 
-      await setDoc(newPostRef, userData);
+      await setDoc(newUserRef, userData);
 
       reset();
       toast.success(currentPost ? 'Update success!' : 'Create success!');
@@ -231,15 +237,9 @@ export function PostNewEditForm({ currentPost }) {
           }
         />
 
-        <Controller
-          name="commentsEnabled"
-          control={methods.control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={<Switch {...field} checked={field.value} />}
-              label="Enable comments"
-            />
-          )}
+        <FormControlLabel
+          control={<Switch defaultChecked inputProps={{ id: 'comments-switch' }} />}
+          label="Enable comments"
         />
       </Stack>
     </Card>
@@ -247,16 +247,10 @@ export function PostNewEditForm({ currentPost }) {
 
   const renderActions = (
     <Box display="flex" alignItems="center" flexWrap="wrap" justifyContent="flex-end">
-      <Controller
-        name="publish"
-        control={methods.control}
-        render={({ field }) => (
-          <FormControlLabel
-            control={<Switch {...field} checked={field.value} />}
-            label="Publish"
-            sx={{ pl: 3, flexGrow: 1 }}
-          />
-        )}
+      <FormControlLabel
+        control={<Switch defaultChecked inputProps={{ id: 'publish-switch' }} />}
+        label="Publish"
+        sx={{ pl: 3, flexGrow: 1 }}
       />
 
       <div>
@@ -281,7 +275,9 @@ export function PostNewEditForm({ currentPost }) {
     <Form methods={methods} onSubmit={onSubmit}>
       <Stack spacing={5} sx={{ mx: 'auto', maxWidth: { xs: 720, xl: 880 } }}>
         {renderDetails}
+
         {renderProperties}
+
         {renderActions}
       </Stack>
 
