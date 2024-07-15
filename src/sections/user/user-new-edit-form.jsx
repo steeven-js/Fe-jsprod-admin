@@ -94,7 +94,7 @@ export function UserNewEditForm({ currentUser }) {
   // Réinitialiser les valeurs du formulaire lorsque currentUser change
   useEffect(() => {
     reset(defaultValues);
-  }, [currentUser, reset]);
+  }, [currentUser, reset, defaultValues]);
 
   const values = watch();
 

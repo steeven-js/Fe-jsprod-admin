@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getDocs, collection, deleteDoc, doc } from 'firebase/firestore';
+import { doc, getDocs, deleteDoc, collection } from 'firebase/firestore';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -21,8 +21,8 @@ import { useSetState } from 'src/hooks/use-set-state';
 import { db } from 'src/utils/firebase';
 
 import { varAlpha } from 'src/theme/styles';
+import { _roles, USER_STATUS_OPTIONS } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
 
 import { Label } from 'src/components/label';
 import { toast } from 'src/components/snackbar';
@@ -87,10 +87,10 @@ export function UserListView() {
         const users = [];
 
         // Itère à travers chaque document et log les données
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
+        querySnapshot.forEach((_doc) => {
+          const data = _doc.data();
           // console.log(doc.id, '=>', data);
-          users.push({ id: doc.id, ...data });
+          users.push({ id: _doc.id, ...data });
         });
 
         // Met à jour l'état avec les données des utilisateurs récupérées

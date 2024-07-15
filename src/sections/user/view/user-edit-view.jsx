@@ -1,15 +1,16 @@
+import { useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
+
 import { paths } from 'src/routes/paths';
 import { useParams } from 'src/routes/hooks';
+
+import { db } from 'src/utils/firebase';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { db } from 'src/utils/firebase';
-
 import { UserNewEditForm } from '../user-new-edit-form';
-import { useEffect, useState } from 'react';
 
 // ----------------------------------------------------------------------
 

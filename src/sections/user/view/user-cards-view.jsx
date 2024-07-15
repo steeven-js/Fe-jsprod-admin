@@ -8,7 +8,7 @@ import { RouterLink } from 'src/routes/components';
 
 import { db } from 'src/utils/firebase';
 
-import { _userCards } from 'src/_mock';
+// import { _userCards } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
