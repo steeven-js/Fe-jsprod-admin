@@ -1,5 +1,5 @@
 import { z as zod } from 'zod';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import { doc, setDoc, collection } from 'firebase/firestore';
@@ -57,6 +57,7 @@ export const NewUserSchema = zod.object({
 export function UserNewEditForm({ currentUser }) {
   const router = useRouter();
 
+  // Initialisation du formulaire avec des valeurs par défaut
   const defaultValues = useMemo(
     () => ({
       status: currentUser?.status || '',
@@ -90,6 +91,11 @@ export function UserNewEditForm({ currentUser }) {
     formState: { isSubmitting },
   } = methods;
 
+  // Réinitialiser les valeurs du formulaire lorsque currentUser change
+  useEffect(() => {
+    reset(defaultValues);
+  }, [currentUser, reset]);
+
   const values = watch();
 
   const onSubmit = handleSubmit(async (data) => {
@@ -119,7 +125,7 @@ export function UserNewEditForm({ currentUser }) {
 
       // Crée un objet de données utilisateur avec l'URL de l'avatar mise à jour
       const userData = {
-        ...data,
+        ...otherData,
         avatarUrl,
       };
 

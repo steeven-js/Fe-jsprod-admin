@@ -86,7 +86,7 @@ export function UserListView() {
         // Iterate through each document and log the data
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          console.log(doc.id, '=>', data);
+          // console.log(doc.id, '=>', data);
           users.push({ id: doc.id, ...data });
         });
 
@@ -104,8 +104,6 @@ export function UserListView() {
   // ==========================================================
 
   const [tableData, setUserData] = useState([]);
-
-  console.log('tableData:', tableData);
 
   const filters = useSetState({ name: '', role: [], status: 'all' });
 
