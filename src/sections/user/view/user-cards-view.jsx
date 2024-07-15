@@ -57,7 +57,7 @@ export function UserCardsView() {
   }, []); // Le tableau vide [] garantit que cet effet se déclenche uniquement une fois après le montage du composant
   // ==========================================================
 
-  console.log('tableData:', tableData);
+  // console.log('tableData:', tableData);
 
   return (
     <DashboardContent>

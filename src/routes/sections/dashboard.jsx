@@ -92,7 +92,7 @@ export const dashboardRoutes = [
         path: 'user',
         children: [
           { element: <UserProfilePage />, index: true },
-          { path: 'profile', element: <UserProfilePage /> },
+          { path: 'profile/:id', element: <UserProfilePage /> },
           { path: 'cards', element: <UserCardsPage /> },
           { path: 'list', element: <UserListPage /> },
           { path: 'new', element: <UserCreatePage /> },

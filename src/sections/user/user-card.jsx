@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
@@ -6,6 +7,8 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ListItemText from '@mui/material/ListItemText';
+
+import { useRouter } from 'src/routes/hooks';
 
 import { fShortenNumber } from 'src/utils/format-number';
 
@@ -15,10 +18,22 @@ import { AvatarShape } from 'src/assets/illustrations';
 
 import { Image } from 'src/components/image';
 import { SocialIcon } from 'src/components/iconify';
+import { useCallback } from 'react';
+import { paths } from 'src/routes/paths';
+import { RouterLink } from 'src/routes/components';
 
 // ----------------------------------------------------------------------
 
 export function UserCard({ user }) {
+  const router = useRouter();
+
+  const handleUserProfile = useCallback(
+    (id) => {
+      router.push(paths.dashboard.user.profile(id));
+    },
+    [router]
+  );
+
   return (
     <Card sx={{ textAlign: 'center' }}>
       <Box sx={{ position: 'relative' }}>
@@ -60,13 +75,15 @@ export function UserCard({ user }) {
         />
       </Box>
 
-      <ListItemText
-        sx={{ mt: 7, mb: 1 }}
-        primary={user.name}
-        secondary={user.role}
-        primaryTypographyProps={{ typography: 'subtitle1' }}
-        secondaryTypographyProps={{ component: 'span', mt: 0.5 }}
-      />
+      <Link component={RouterLink} href={paths.dashboard.user.profile(user.id)}>
+        <ListItemText
+          sx={{ mt: 7, mb: 1 }}
+          primary={user.name}
+          secondary={user.role}
+          primaryTypographyProps={{ typography: 'subtitle1' }}
+          secondaryTypographyProps={{ component: 'span', mt: 0.5 }}
+        />
+      </Link>
 
       <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mb: 2.5 }}>
         {_socials.map((social) => (

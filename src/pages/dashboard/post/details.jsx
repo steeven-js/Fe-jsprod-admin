@@ -14,7 +14,7 @@ const metadata = { title: `Post details | Dashboard - ${CONFIG.site.name}` };
 export default function Page() {
   const { title = '' } = useParams();
 
-  console.log(title);
+  // console.log(title);
 
   const { post, postLoading, postError } = useGetPost(title);
 

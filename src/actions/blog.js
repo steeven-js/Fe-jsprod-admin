@@ -39,7 +39,7 @@ export function useGetPost(title) {
 
   const { data, isLoading, error, isValidating } = useSWR(url, fetcher, swrOptions);
 
-  console.log(data);
+  // console.log(data);
 
   const memoizedValue = useMemo(
     () => ({

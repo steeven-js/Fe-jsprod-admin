@@ -125,7 +125,7 @@ export function UserListView() {
     (id) => {
       const deleteRow = tableData.filter((row) => row.id !== id);
 
-      console.log('Delete row id:', id);
+      // console.log('Delete row id:', id);
 
       toast.success('Delete success!');
 
@@ -154,9 +154,6 @@ export function UserListView() {
 
     // Filtre les données de la table pour conserver seulement celles non sélectionnées
     const deleteRows = tableData.filter((row) => !selectedIds.includes(row.id));
-
-    console.log('deleteRows:', deleteRows);
-    console.log('Delete rows id:', selectedIds);
 
     // Appel de la fonction pour supprimer les utilisateurs
     await deleteUsersByIds(selectedIds);
