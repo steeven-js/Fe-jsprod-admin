@@ -3,6 +3,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo, useEffect, useCallback } from 'react';
 
+import { doc, setDoc, collection } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
@@ -21,6 +24,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { _tags } from 'src/_mock';
+import { db, auth, storage } from 'src/utils/firebase';
 
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaHelper } from 'src/components/hook-form';
@@ -44,6 +48,9 @@ export const NewPostSchema = zod.object({
 // ----------------------------------------------------------------------
 
 export function PostNewEditForm({ currentPost }) {
+  // Obtenir les information de l'utilisateur actuel
+  console.log('auth.currentUser uid', auth.currentUser.uid);
+
   const router = useRouter();
 
   const preview = useBoolean();
@@ -75,6 +82,11 @@ export function PostNewEditForm({ currentPost }) {
     formState: { isSubmitting, isValid },
   } = methods;
 
+  // Réinitialiser les valeurs du formulaire lorsque currentPost change
+  useEffect(() => {
+    reset(defaultValues);
+  }, [currentPost, reset, defaultValues]);
+
   const values = watch();
 
   useEffect(() => {
@@ -86,13 +98,36 @@ export function PostNewEditForm({ currentPost }) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const { coverUrl: initialCoverUrl, ...otherData } = data;
+      let coverUrl = initialCoverUrl;
+
+      if (data.coverUrl && data.coverUrl instanceof File) {
+        const userId = currentPost?.id || doc(collection(db, 'posts')).id;
+        const fileName = `coverUrls/${userId}/${Date.now()}_${data.coverUrl.name}`;
+        const storageRef = ref(storage, fileName);
+
+        await uploadBytes(storageRef, data.coverUrl);
+        coverUrl = await getDownloadURL(storageRef);
+      }
+
+      const userData = {
+        ...otherData,
+        coverUrl,
+      };
+
+      const usersRef = collection(db, 'posts');
+      const newUserRef = currentPost?.id ? doc(usersRef, currentPost.id) : doc(usersRef);
+
+      await setDoc(newUserRef, userData);
+
       reset();
-      preview.onFalse();
       toast.success(currentPost ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.post.root);
-      console.info('DATA', data);
+      router.push(paths.dashboard.user.list);
+      console.info('DATA', userData);
     } catch (error) {
       console.error(error);
+      toast.error('An error occurred');
     }
   });
 
