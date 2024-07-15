@@ -46,7 +46,7 @@ export function PostItemHorizontal({ post }) {
 
   return (
     <>
-      <Card sx={{ display: 'flex' }}>
+      <Card sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Stack spacing={1} sx={{ p: theme.spacing(3, 3, 2, 3) }}>
           <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
             <Label variant="soft" color={(publish === 'published' && 'info') || 'default'}>

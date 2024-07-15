@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { doc, getDocs, deleteDoc, collection } from 'firebase/firestore';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -11,6 +12,7 @@ import { RouterLink } from 'src/routes/components';
 import { useDebounce } from 'src/hooks/use-debounce';
 import { useSetState } from 'src/hooks/use-set-state';
 
+import { db } from 'src/utils/firebase';
 import { orderBy } from 'src/utils/helper';
 
 import { POST_SORT_OPTIONS } from 'src/_mock';
@@ -31,16 +33,60 @@ export function PostListView() {
   const [sortBy, setSortBy] = useState('latest');
 
   const [searchQuery, setSearchQuery] = useState('');
+  // const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(false);
 
   const debouncedQuery = useDebounce(searchQuery);
 
-  const { posts, postsLoading } = useGetPosts();
+  // const { posts, postsLoading } = useGetPosts();
 
   const { searchResults, searchLoading } = useSearchPosts(debouncedQuery);
 
   const filters = useSetState({ publish: 'all' });
 
-  const dataFiltered = applyFilter({ inputData: posts, filters: filters.state, sortBy });
+  // const dataFiltered = applyFilter({ inputData: posts, filters: filters.state, sortBy });
+
+  // ==========================================================
+  // Firebase: Fetch and Log Posts
+  // ==========================================================
+  useEffect(() => {
+    const fetchAndLogPosts = async () => {
+      try {
+        setPostsLoading(true);
+        // Référence à la collection 'posts'
+        const postsRef = collection(db, 'posts');
+
+        // Récupère tous les documents de la collection 'posts'
+        const querySnapshot = await getDocs(postsRef);
+
+        // Crée un tableau pour stocker les données des utilisateurs
+        const posts = [];
+
+        // Itère à travers chaque document et log les données
+        querySnapshot.forEach((_doc) => {
+          const data = _doc.data();
+          // console.log(doc.id, '=>', data);
+          posts.push({ id: _doc.id, ...data });
+        });
+
+        // Met à jour l'état avec les données des utilisateurs récupérées
+        setPosts(posts);
+        setPostsLoading(false);
+      } catch (error) {
+        // Log une erreur si la récupération des utilisateurs échoue
+        console.error('Error fetching posts:', error);
+        setPostsLoading(false);
+      }
+    };
+
+    // Appelle la fonction pour récupérer et log les utilisateurs
+    fetchAndLogPosts();
+  }, []); // Le tableau vide [] garantit que cet effet se déclenche uniquement une fois après le montage du composant
+  // ==========================================================
+
+  // console.log('posts:', posts);
+  // console.log('posts:', posts);
 
   const handleSortBy = useCallback((newValue) => {
     setSortBy(newValue);
@@ -125,7 +171,7 @@ export function PostListView() {
         ))}
       </Tabs>
 
-      <PostListHorizontal posts={dataFiltered} loading={postsLoading} />
+      <PostListHorizontal posts={posts} loading={postsLoading} />
     </DashboardContent>
   );
 }
