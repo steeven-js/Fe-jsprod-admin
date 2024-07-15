@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -9,6 +9,9 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
+
+import { db } from 'src/utils/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -64,6 +67,33 @@ export function UserListView() {
   const router = useRouter();
 
   const confirm = useBoolean();
+
+  // ==========================================================
+  // Firebase: Fetch and Log Users
+  // ==========================================================
+  useEffect(() => {
+    const fetchAndLogUsers = async () => {
+      try {
+        // Reference to the 'users' collection
+        const usersRef = collection(db, 'users');
+
+        // Fetch all documents from the 'users' collection
+        const querySnapshot = await getDocs(usersRef);
+
+        // Iterate through each document and log the data
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, '=>', doc.data());
+        });
+      } catch (error) {
+        // Log an error if fetching users fails
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    // Call the function to fetch and log users
+    fetchAndLogUsers();
+  }, []); // Empty array [] ensures this effect runs only once after the component mounts
+  // ==========================================================
 
   const [tableData, setTableData] = useState(_userList);
 
