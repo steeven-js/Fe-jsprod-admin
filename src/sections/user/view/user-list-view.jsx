@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { getDocs, collection } from 'firebase/firestore';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -10,15 +11,14 @@ import Tooltip from '@mui/material/Tooltip';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 
-import { db } from 'src/utils/firebase';
-import { collection, getDocs } from 'firebase/firestore';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useSetState } from 'src/hooks/use-set-state';
+
+import { db } from 'src/utils/firebase';
 
 import { varAlpha } from 'src/theme/styles';
 import { DashboardContent } from 'src/layouts/dashboard';
@@ -80,10 +80,18 @@ export function UserListView() {
         // Fetch all documents from the 'users' collection
         const querySnapshot = await getDocs(usersRef);
 
+        // Create an array to store user data
+        const users = [];
+
         // Iterate through each document and log the data
         querySnapshot.forEach((doc) => {
-          console.log(doc.id, '=>', doc.data());
+          const data = doc.data();
+          console.log(doc.id, '=>', data);
+          users.push({ id: doc.id, ...data });
         });
+
+        // Update state with the fetched user data
+        setUserData(users);
       } catch (error) {
         // Log an error if fetching users fails
         console.error('Error fetching users:', error);
@@ -95,7 +103,9 @@ export function UserListView() {
   }, []); // Empty array [] ensures this effect runs only once after the component mounts
   // ==========================================================
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setUserData] = useState([]);
+
+  console.log('tableData:', tableData);
 
   const filters = useSetState({ name: '', role: [], status: 'all' });
 
