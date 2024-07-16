@@ -49,7 +49,7 @@ export const NewPostSchema = zod.object({
 
 export function PostNewEditForm({ currentPost }) {
   // Obtenir les information de l'utilisateur actuel
-  console.log('auth.currentUser uid', auth.currentUser.uid);
+  // console.log('auth.currentUser uid', auth.currentUser.uid);
 
   const router = useRouter();
 
@@ -141,7 +141,7 @@ export function PostNewEditForm({ currentPost }) {
 
       reset();
       toast.success(currentPost ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.user.list);
+      router.push(paths.dashboard.post.list);
       console.info('DATA', userData);
     } catch (error) {
       console.error(error);
