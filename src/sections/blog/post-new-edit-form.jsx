@@ -111,6 +111,8 @@ export function PostNewEditForm({ currentPost }) {
         coverUrl = await getDownloadURL(storageRef);
       }
 
+      const now = Date.now(); // Timestamp actuel en millisecondes
+
       const userData = {
         ...otherData,
         coverUrl,
@@ -121,6 +123,11 @@ export function PostNewEditForm({ currentPost }) {
             name: auth.currentUser.displayName,
           },
         ],
+        updatedAt: now,
+        ...(currentPost ? {} : { createdAt: now }),
+        totalViews: 0,
+        totalShares: 0,
+        totalComments: 0,
       };
 
       const usersRef = collection(db, 'posts');
