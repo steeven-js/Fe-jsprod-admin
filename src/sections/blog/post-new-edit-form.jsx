@@ -130,8 +130,7 @@ export function PostNewEditForm({ currentPost }) {
         totalViews: 0,
         totalShares: 0,
         totalComments: 0,
-        // publish: document.getElementById('publish-switch').checked,
-        // comments: document.getElementById('comments-switch').checked ? [] : undefined,
+        publish: 'published',
       };
 
       const usersRef = collection(db, 'posts');
