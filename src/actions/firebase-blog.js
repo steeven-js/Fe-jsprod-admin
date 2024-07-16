@@ -1,4 +1,4 @@
-import { query, where, getDocs, collection } from 'firebase/firestore';
+import { query, where, limit, getDocs, orderBy, collection } from 'firebase/firestore';
 
 import { db } from 'src/utils/firebase';
 
@@ -31,6 +31,22 @@ export const fetchAllPosts = async () => {
     }));
   } catch (error) {
     console.error('Error fetching posts:', error);
+    throw error;
+  }
+};
+
+export const fetchLatestPosts = async (count = 4) => {
+  try {
+    const postsRef = collection(db, 'posts');
+    const q = query(postsRef, orderBy('createdAt', 'desc'), limit(count));
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.docs.map((_doc) => ({
+      id: _doc.id,
+      ..._doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error fetching latest posts:', error);
     throw error;
   }
 };

@@ -24,7 +24,7 @@ import { Iconify } from 'src/components/iconify';
 export function PostItem({ post }) {
   const theme = useTheme();
 
-  const linkTo = paths.post.details(post.title);
+  const linkTo = paths.post.details(post.slug);
 
   return (
     <Card>

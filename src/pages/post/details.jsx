@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
 
 import { CONFIG } from 'src/config-global';
-import { useGetPost, useGetLatestPosts } from 'src/actions/blog';
+import { fetchAllPosts, fetchPostBySlug } from 'src/actions/firebase-blog';
 
 import { PostDetailsHomeView } from 'src/sections/blog/view';
 
@@ -12,11 +13,51 @@ import { PostDetailsHomeView } from 'src/sections/blog/view';
 const metadata = { title: `Post details - ${CONFIG.site.name}` };
 
 export default function Page() {
-  const { title = '' } = useParams();
+  const { slug = '' } = useParams();
+  const [post, setPost] = useState(null);
+  const [latestPosts, setLatestPosts] = useState(null);
+  const [postLoading, setPostLoading] = useState(true);
+  const [postError, setPostError] = useState(null);
 
-  const { post, postLoading, postError } = useGetPost(title);
+  console.log('latestPosts:', latestPosts);
 
-  const { latestPosts } = useGetLatestPosts(title);
+  useEffect(() => {
+    const getPost = async () => {
+      if (!slug) return;
+
+      setPostLoading(true);
+      try {
+        const postData = await fetchPostBySlug(slug);
+        setPost(postData);
+      } catch (error) {
+        console.error('Error fetching post:', error);
+        setPostError(error.message || 'An error occurred while fetching the post');
+      } finally {
+        setPostLoading(false);
+      }
+    };
+
+    getPost();
+  }, [slug]);
+
+  useEffect(() => {
+    if (post) {
+      console.log('Updated Post:', post);
+    }
+  }, [post]);
+
+  useEffect(() => {
+    const getLatestPosts = async () => {
+      try {
+        const posts = await fetchAllPosts();
+        setLatestPosts(posts);
+      } catch (error) {
+        console.error('Error fetching latest posts:', error);
+      }
+    };
+
+    getLatestPosts();
+  }, []);
 
   return (
     <>
