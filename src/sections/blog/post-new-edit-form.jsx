@@ -48,9 +48,6 @@ export const NewPostSchema = zod.object({
 // ----------------------------------------------------------------------
 
 export function PostNewEditForm({ currentPost }) {
-  // Obtenir les information de l'utilisateur actuel
-  // console.log('auth.currentUser uid', auth.currentUser.uid);
-
   const router = useRouter();
 
   const preview = useBoolean();
@@ -121,8 +118,10 @@ export function PostNewEditForm({ currentPost }) {
         slug,
         author: [
           {
-            avatarUrl: auth.currentUser.photoURL,
-            name: auth.currentUser.displayName,
+            avatarUrl: auth.currentUser.photoURL
+              ? auth.currentUser.photoURL
+              : 'https://api-dev-minimal-v6.vercel.app/assets/images/avatar/avatar-25.webp',
+            name: auth.currentUser.displayName ? auth.currentUser.displayName : 'Jacques Steeven',
           },
         ],
         updatedAt: now,
