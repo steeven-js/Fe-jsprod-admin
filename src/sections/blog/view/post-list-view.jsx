@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { doc, getDocs, deleteDoc, collection } from 'firebase/firestore';
+import { getDocs, collection } from 'firebase/firestore';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -16,8 +16,8 @@ import { db } from 'src/utils/firebase';
 import { orderBy } from 'src/utils/helper';
 
 import { POST_SORT_OPTIONS } from 'src/_mock';
+import { useSearchPosts } from 'src/actions/blog';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { useGetPosts, useSearchPosts } from 'src/actions/blog';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
@@ -60,9 +60,6 @@ export function PostListView() {
         // Récupère tous les documents de la collection 'posts'
         const querySnapshot = await getDocs(postsRef);
 
-        // Crée un tableau pour stocker les données des utilisateurs
-        const posts = [];
-
         // Itère à travers chaque document et log les données
         querySnapshot.forEach((_doc) => {
           const data = _doc.data();
@@ -82,7 +79,7 @@ export function PostListView() {
 
     // Appelle la fonction pour récupérer et log les utilisateurs
     fetchAndLogPosts();
-  }, []); // Le tableau vide [] garantit que cet effet se déclenche uniquement une fois après le montage du composant
+  }, [posts]); // Le tableau vide [] garantit que cet effet se déclenche uniquement une fois après le montage du composant
   // ==========================================================
 
   // console.log('posts:', posts);

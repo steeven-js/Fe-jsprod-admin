@@ -1,14 +1,14 @@
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { query, where, getDocs, collection } from 'firebase/firestore';
 
 import { useParams } from 'src/routes/hooks';
 
+import { db } from 'src/utils/firebase';
+
 import { CONFIG } from 'src/config-global';
-import { useGetPost } from 'src/actions/blog';
 
 import { PostDetailsView } from 'src/sections/blog/view';
-import { db } from 'src/utils/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
 
 // ----------------------------------------------------------------------
 

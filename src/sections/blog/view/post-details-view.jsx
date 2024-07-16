@@ -2,14 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
+// import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
+// import Divider from '@mui/material/Divider';
 import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import AvatarGroup, { avatarGroupClasses } from '@mui/material/AvatarGroup';
+// import AvatarGroup, { avatarGroupClasses } from '@mui/material/AvatarGroup';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
@@ -24,8 +24,8 @@ import { Markdown } from 'src/components/markdown';
 import { EmptyContent } from 'src/components/empty-content';
 
 import { PostDetailsHero } from '../post-details-hero';
-import { PostCommentList } from '../post-comment-list';
-import { PostCommentForm } from '../post-comment-form';
+// import { PostCommentList } from '../post-comment-list';
+// import { PostCommentForm } from '../post-comment-form';
 import { PostDetailsSkeleton } from '../post-skeleton';
 import { PostDetailsToolbar } from '../post-details-toolbar';
 
