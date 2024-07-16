@@ -132,15 +132,15 @@ export function PostDetailsView({ post, loading, error }) {
               sx={{ mr: 1 }}
             />
 
-            <AvatarGroup sx={{ [`& .${avatarGroupClasses.avatar}`]: { width: 32, height: 32 } }}>
+            {/* <AvatarGroup sx={{ [`& .${avatarGroupClasses.avatar}`]: { width: 32, height: 32 } }}>
               {post?.favoritePerson.map((person) => (
                 <Avatar key={person.name} alt={person.name} src={person.avatarUrl} />
               ))}
-            </AvatarGroup>
+            </AvatarGroup> */}
           </Stack>
         </Stack>
 
-        <Stack direction="row" sx={{ mb: 3, mt: 5 }}>
+        {/* <Stack direction="row" sx={{ mb: 3, mt: 5 }}>
           <Typography variant="h4">Comments</Typography>
 
           <Typography variant="subtitle2" sx={{ color: 'text.disabled' }}>
@@ -152,7 +152,7 @@ export function PostDetailsView({ post, loading, error }) {
 
         <Divider sx={{ mt: 5, mb: 2 }} />
 
-        <PostCommentList comments={post?.comments ?? []} />
+        <PostCommentList comments={post?.comments ?? []} /> */}
       </Stack>
     </DashboardContent>
   );

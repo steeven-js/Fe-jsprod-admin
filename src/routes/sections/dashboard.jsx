@@ -133,8 +133,8 @@ export const dashboardRoutes = [
         children: [
           { element: <BlogPostsPage />, index: true },
           { path: 'list', element: <BlogPostsPage /> },
-          { path: ':title', element: <BlogPostPage /> },
-          { path: ':title/edit', element: <BlogEditPostPage /> },
+          { path: ':slug', element: <BlogPostPage /> },
+          { path: ':slug/edit', element: <BlogEditPostPage /> },
           { path: 'new', element: <BlogNewPostPage /> },
         ],
       },

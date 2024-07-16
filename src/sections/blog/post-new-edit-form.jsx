@@ -49,7 +49,7 @@ export const NewPostSchema = zod.object({
 
 export function PostNewEditForm({ currentPost }) {
   // Obtenir les information de l'utilisateur actuel
-  console.log('auth.currentUser uid', auth.currentUser.uid);
+  // console.log('auth.currentUser uid', auth.currentUser.uid);
 
   const router = useRouter();
 
@@ -112,11 +112,13 @@ export function PostNewEditForm({ currentPost }) {
       }
 
       const now = Date.now(); // Timestamp actuel en millisecondes
+      const slug = otherData.title.toLowerCase().replace(/\s+/g, '-');
 
       const userData = {
         ...otherData,
         coverUrl,
         authorId: auth.currentUser.uid,
+        slug,
         author: [
           {
             avatarUrl: auth.currentUser.photoURL,
@@ -128,6 +130,8 @@ export function PostNewEditForm({ currentPost }) {
         totalViews: 0,
         totalShares: 0,
         totalComments: 0,
+        // publish: document.getElementById('publish-switch').checked,
+        // comments: document.getElementById('comments-switch').checked ? [] : undefined,
       };
 
       const usersRef = collection(db, 'posts');
