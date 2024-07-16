@@ -15,44 +15,55 @@ import { PostEditView } from 'src/sections/blog/view';
 const metadata = { title: `Post edit | Dashboard - ${CONFIG.site.name}` };
 
 export default function Page() {
-  const { title = '' } = useParams();
+  const { slug = '' } = useParams();
   const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [postLoading, setPostLoading] = useState(true);
+  const [postError, setPostError] = useState(null);
+
+  // console.log('Slug:', slug);
 
   // ==========================================================
-  // Firebase: Fetch and Log Post by Title
+  // Firebase: Fetch and Log Post by Slug
   // ==========================================================
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        setLoading(true);
+        setPostLoading(true);
         const postsRef = collection(db, 'posts');
-        const q = query(postsRef, where('title', '==', title));
+        const q = query(postsRef, where('slug', '==', slug));
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
           const postDoc = querySnapshot.docs[0];
-          setPost({ id: postDoc.id, ...postDoc.data() });
+          const postData = { id: postDoc.id, ...postDoc.data() };
+          setPost(postData);
         } else {
-          setError('Post not found');
+          console.log('Post not found');
+          setPostError('Post not found');
         }
       } catch (err) {
         console.error('Error fetching post:', err);
-        setError('An error occurred while fetching the post');
+        setPostError('An error occurred while fetching the post');
       } finally {
-        setLoading(false);
+        setPostLoading(false);
       }
     };
 
-    if (title) {
+    if (slug) {
       fetchPost();
     }
 
     return () => {
       // Cleanup if needed
     };
-  }, [title]);
+  }, [slug]);
+
+  // Log post when it changes
+  useEffect(() => {
+    if (post) {
+      console.log('Updated Post:', post);
+    }
+  }, [post]);
   // ==========================================================
 
   return (

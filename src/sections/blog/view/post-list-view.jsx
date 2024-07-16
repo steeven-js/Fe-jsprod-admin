@@ -50,36 +50,28 @@ export function PostListView() {
   // ==========================================================
   // Firebase: Fetch and Log Posts
   // ==========================================================
+  const fetchAndLogPosts = async () => {
+    try {
+      setPostsLoading(true);
+      const postsRef = collection(db, 'posts');
+      const querySnapshot = await getDocs(postsRef);
+
+      const newPosts = querySnapshot.docs.map((_doc) => ({
+        id: _doc.id,
+        ..._doc.data(),
+      }));
+
+      setPosts(newPosts);
+      setPostsLoading(false);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      setPostsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAndLogPosts = async () => {
-      try {
-        setPostsLoading(true);
-        // Référence à la collection 'posts'
-        const postsRef = collection(db, 'posts');
-
-        // Récupère tous les documents de la collection 'posts'
-        const querySnapshot = await getDocs(postsRef);
-
-        // Itère à travers chaque document et log les données
-        querySnapshot.forEach((_doc) => {
-          const data = _doc.data();
-          // console.log(doc.id, '=>', data);
-          posts.push({ id: _doc.id, ...data });
-        });
-
-        // Met à jour l'état avec les données des utilisateurs récupérées
-        setPosts(posts);
-        setPostsLoading(false);
-      } catch (error) {
-        // Log une erreur si la récupération des utilisateurs échoue
-        console.error('Error fetching posts:', error);
-        setPostsLoading(false);
-      }
-    };
-
-    // Appelle la fonction pour récupérer et log les utilisateurs
     fetchAndLogPosts();
-  }, [posts]); // Le tableau vide [] garantit que cet effet se déclenche uniquement une fois après le montage du composant
+  }, []); // Tableau de dépendances vide
   // ==========================================================
 
   // console.log('posts:', posts);
@@ -134,7 +126,7 @@ export function PostListView() {
           results={searchResults}
           onSearch={handleSearch}
           loading={searchLoading}
-          hrefItem={(title) => paths.dashboard.post.details(title)}
+          hrefItem={(slug) => paths.dashboard.post.details(slug)}
         />
 
         <PostSort sort={sortBy} onSort={handleSortBy} sortOptions={POST_SORT_OPTIONS} />

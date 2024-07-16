@@ -20,10 +20,10 @@ export default function Page() {
   const [postLoading, setPostLoading] = useState(true);
   const [postError, setPostError] = useState(null);
 
-  console.log('Title:', slug);
+  // console.log('Slug:', slug);
 
   // ==========================================================
-  // Firebase: Fetch and Log Post by Title
+  // Firebase: Fetch and Log Post by Slug
   // ==========================================================
   useEffect(() => {
     const fetchPost = async () => {

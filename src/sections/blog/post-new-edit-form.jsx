@@ -49,7 +49,7 @@ export const NewPostSchema = zod.object({
 
 export function PostNewEditForm({ currentPost }) {
   // Obtenir les information de l'utilisateur actuel
-  // console.log('auth.currentUser uid', auth.currentUser.uid);
+  console.log('auth.currentUser uid', auth.currentUser.uid);
 
   const router = useRouter();
 
