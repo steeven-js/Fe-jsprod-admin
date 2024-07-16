@@ -42,7 +42,7 @@ export const paths = {
   },
   post: {
     root: `/post`,
-    details: (title) => `/post/${paramCase(title)}`,
+    details: (slug) => `/post/${paramCase(slug)}`,
     demo: { details: `/post/${paramCase(MOCK_TITLE)}` },
   },
   // AUTH

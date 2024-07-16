@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getDocs, collection } from 'firebase/firestore';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -12,12 +11,12 @@ import { RouterLink } from 'src/routes/components';
 import { useDebounce } from 'src/hooks/use-debounce';
 import { useSetState } from 'src/hooks/use-set-state';
 
-import { db } from 'src/utils/firebase';
 import { orderBy } from 'src/utils/helper';
 
 import { POST_SORT_OPTIONS } from 'src/_mock';
 import { useSearchPosts } from 'src/actions/blog';
 import { DashboardContent } from 'src/layouts/dashboard';
+import { fetchAllPosts } from 'src/actions/firebase-blog';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
@@ -33,49 +32,36 @@ export function PostListView() {
   const [sortBy, setSortBy] = useState('latest');
 
   const [searchQuery, setSearchQuery] = useState('');
-  // const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(false);
 
   const debouncedQuery = useDebounce(searchQuery);
 
-  // const { posts, postsLoading } = useGetPosts();
-
   const { searchResults, searchLoading } = useSearchPosts(debouncedQuery);
 
   const filters = useSetState({ publish: 'all' });
 
-  // const dataFiltered = applyFilter({ inputData: posts, filters: filters.state, sortBy });
+  const dataFiltered = applyFilter({ inputData: posts, filters: filters.state, sortBy });
 
   // ==========================================================
   // Firebase: Fetch and Log Posts
   // ==========================================================
-  const fetchAndLogPosts = async () => {
+  const fetchPosts = async () => {
     try {
       setPostsLoading(true);
-      const postsRef = collection(db, 'posts');
-      const querySnapshot = await getDocs(postsRef);
-
-      const newPosts = querySnapshot.docs.map((_doc) => ({
-        id: _doc.id,
-        ..._doc.data(),
-      }));
-
-      setPosts(newPosts);
-      setPostsLoading(false);
+      const fetchedPosts = await fetchAllPosts();
+      setPosts(fetchedPosts);
     } catch (error) {
       console.error('Error fetching posts:', error);
+    } finally {
       setPostsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAndLogPosts();
-  }, []); // Tableau de dépendances vide
+    fetchPosts();
+  }, []);
   // ==========================================================
-
-  // console.log('posts:', posts);
-  // console.log('posts:', posts);
 
   const handleSortBy = useCallback((newValue) => {
     setSortBy(newValue);
