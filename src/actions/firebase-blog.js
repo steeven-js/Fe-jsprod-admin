@@ -1,4 +1,13 @@
-import { query, where, limit, getDocs, orderBy, collection } from 'firebase/firestore';
+import {
+  query,
+  where,
+  limit,
+  endAt,
+  startAt,
+  getDocs,
+  orderBy,
+  collection,
+} from 'firebase/firestore';
 
 import { db } from 'src/utils/firebase';
 
@@ -47,6 +56,58 @@ export const fetchLatestPosts = async (count = 4) => {
     }));
   } catch (error) {
     console.error('Error fetching latest posts:', error);
+    throw error;
+  }
+};
+
+export const searchPosts = async (searchQuery) => {
+  try {
+    const q = query(
+      collection(db, 'posts'),
+      orderBy('title'),
+      startAt(searchQuery),
+      endAt(`${searchQuery}\uf8ff`),
+      limit(10)
+    );
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.docs.map((_doc) => ({
+      id: _doc.id,
+      ..._doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error searching posts:', error);
+    throw error;
+  }
+};
+
+export const fetchSortedPosts = async (sortBy) => {
+  try {
+    const postsRef = collection(db, 'posts');
+    let q;
+
+    switch (sortBy) {
+      case 'latest':
+        q = query(postsRef, orderBy('createdAt', 'desc'));
+        break;
+      case 'oldest':
+        q = query(postsRef, orderBy('createdAt', 'asc'));
+        break;
+      case 'popular':
+        q = query(postsRef, orderBy('totalViews', 'desc'));
+        break;
+      default:
+        q = query(postsRef);
+    }
+
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.docs.map((_doc) => ({
+      id: _doc.id,
+      ..._doc.data(),
+    }));
+  } catch (error) {
+    console.error('Error fetching sorted posts:', error);
     throw error;
   }
 };

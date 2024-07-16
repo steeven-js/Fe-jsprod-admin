@@ -19,7 +19,14 @@ import { Iconify, SocialIcon } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export function PostDetailsHero({ title, author, coverUrl, createdAt }) {
+export function PostDetailsHero({
+  title,
+  author,
+  coverUrl,
+  createdAt,
+  authorAvatarUrl,
+  authorName,
+}) {
   const theme = useTheme();
 
   const smUp = useResponsive('up', 'sm');
@@ -65,14 +72,14 @@ export function PostDetailsHero({ title, author, coverUrl, createdAt }) {
               sx={{ px: { xs: 2, md: 3 }, pb: { xs: 3, md: 8 } }}
             >
               <Avatar
-                alt={author.name}
-                src={author.avatarUrl}
+                alt={authorName}
+                src={authorAvatarUrl}
                 sx={{ width: 64, height: 64, mr: 2 }}
               />
 
               <ListItemText
                 sx={{ color: 'common.white' }}
-                primary={author.name}
+                primary={authorName}
                 secondary={fDate(createdAt)}
                 primaryTypographyProps={{ typography: 'subtitle1', mb: 0.5 }}
                 secondaryTypographyProps={{ color: 'inherit', sx: { opacity: 0.64 } }}

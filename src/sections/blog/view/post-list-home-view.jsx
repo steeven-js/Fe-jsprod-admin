@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
@@ -11,7 +11,7 @@ import { useDebounce } from 'src/hooks/use-debounce';
 import { orderBy } from 'src/utils/helper';
 
 import { POST_SORT_OPTIONS } from 'src/_mock';
-import { useSearchPosts } from 'src/actions/blog';
+import { searchPosts, fetchSortedPosts } from 'src/actions/firebase-blog';
 
 import { PostList } from '../post-list';
 import { PostSort } from '../post-sort';
@@ -19,16 +19,39 @@ import { PostSearch } from '../post-search';
 
 // ----------------------------------------------------------------------
 
-export function PostListHomeView({ posts, loading }) {
+export function PostListHomeView() {
   const [sortBy, setSortBy] = useState('latest');
-
   const [searchQuery, setSearchQuery] = useState('');
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const debouncedQuery = useDebounce(searchQuery);
+  const debouncedQuery = useDebounce(searchQuery, 500);
 
-  const { searchResults, searchLoading } = useSearchPosts(debouncedQuery);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        console.log('Fetching posts with query:', debouncedQuery, 'and sort:', sortBy);
+        if (debouncedQuery) {
+          const results = await searchPosts(debouncedQuery);
+          console.log('Search results:', results);
+          setPosts(results);
+        } else {
+          const sortedPosts = await fetchSortedPosts(sortBy);
+          console.log('Sorted posts:', sortedPosts);
+          setPosts(sortedPosts);
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const dataFiltered = applyFilter({ inputData: posts, sortBy });
+    fetchPosts();
+  }, [debouncedQuery, sortBy]);
+
+  console.log('posts:', posts);
 
   const handleSortBy = useCallback((newValue) => {
     setSortBy(newValue);
@@ -52,17 +75,17 @@ export function PostListHomeView({ posts, loading }) {
         sx={{ mb: { xs: 3, md: 5 } }}
       >
         <PostSearch
-          query={debouncedQuery}
-          results={searchResults}
+          query={searchQuery}
+          results={posts}
           onSearch={handleSearch}
-          loading={searchLoading}
+          loading={loading}
           hrefItem={(title) => paths.post.details(title)}
         />
 
         <PostSort sort={sortBy} onSort={handleSortBy} sortOptions={POST_SORT_OPTIONS} />
       </Stack>
 
-      <PostList posts={dataFiltered} loading={loading} />
+      <PostList posts={posts} loading={loading} />
     </Container>
   );
 }

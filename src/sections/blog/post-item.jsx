@@ -41,8 +41,8 @@ export function PostItem({ post }) {
         />
 
         <Avatar
-          alt={post.author.name}
-          src={post.author.avatarUrl}
+          alt={post.author?.[0]?.name || 'Author'}
+          src={post.author?.[0]?.avatarUrl}
           sx={{
             left: 24,
             zIndex: 9,
@@ -91,8 +91,8 @@ export function PostItemLatest({ post, index }) {
   return (
     <Card>
       <Avatar
-        alt={post.author.name}
-        src={post.author.avatarUrl}
+        alt={post.author?.[0]?.name || 'Author'}
+        src={post.author?.[0]?.avatarUrl}
         sx={{
           top: 24,
           left: 24,

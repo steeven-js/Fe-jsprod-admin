@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useParams } from 'src/routes/hooks';
 
 import { CONFIG } from 'src/config-global';
-import { fetchAllPosts, fetchPostBySlug } from 'src/actions/firebase-blog';
+import { fetchPostBySlug, fetchLatestPosts } from 'src/actions/firebase-blog';
 
 import { PostDetailsHomeView } from 'src/sections/blog/view';
 
@@ -49,7 +49,7 @@ export default function Page() {
   useEffect(() => {
     const getLatestPosts = async () => {
       try {
-        const posts = await fetchAllPosts();
+        const posts = await fetchLatestPosts();
         setLatestPosts(posts);
       } catch (error) {
         console.error('Error fetching latest posts:', error);

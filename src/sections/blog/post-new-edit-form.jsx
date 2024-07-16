@@ -2,8 +2,8 @@ import { z as zod } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo, useEffect, useCallback } from 'react';
-import { doc, setDoc, collection } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { doc, setDoc, updateDoc, collection } from 'firebase/firestore';
 
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
@@ -39,7 +39,7 @@ export const NewPostSchema = zod.object({
   content: schemaHelper.editor().min(100, { message: 'Content must be at least 100 characters' }),
   coverUrl: schemaHelper.file({ message: { required_error: 'Cover is required!' } }),
   tags: zod.string().array().min(2, { message: 'Must have at least 2 items!' }),
-  metaKeywords: zod.string().array().nonempty({ message: 'Meta keywords is required!' }),
+  metaKeywords: zod.string().array().nonempty({ message: 'Meta keywords are required!' }),
   // Not required
   metaTitle: zod.string(),
   metaDescription: zod.string(),
@@ -62,6 +62,7 @@ export function PostNewEditForm({ currentPost }) {
       metaKeywords: currentPost?.metaKeywords || [],
       metaTitle: currentPost?.metaTitle || '',
       metaDescription: currentPost?.metaDescription || '',
+      createdAt: currentPost?.createdAt || Date.now(),
     }),
     [currentPost]
   );
@@ -108,7 +109,7 @@ export function PostNewEditForm({ currentPost }) {
         coverUrl = await getDownloadURL(storageRef);
       }
 
-      const now = Date.now(); // Timestamp actuel en millisecondes
+      const now = Date.now();
       const slug = otherData.title.toLowerCase().replace(/\s+/g, '-');
 
       const userData = {
@@ -125,17 +126,27 @@ export function PostNewEditForm({ currentPost }) {
           },
         ],
         updatedAt: now,
-        ...(currentPost ? {} : { createdAt: now }),
-        totalViews: 0,
-        totalShares: 0,
-        totalComments: 0,
+        totalViews: currentPost?.totalViews || 0,
+        totalShares: currentPost?.totalShares || 0,
+        totalComments: currentPost?.totalComments || 0,
         publish: 'published',
       };
 
-      const usersRef = collection(db, 'posts');
-      const newUserRef = currentPost?.id ? doc(usersRef, currentPost.id) : doc(usersRef);
+      // Si c'est un nouveau post, ajoutez createdAt
+      if (!currentPost) {
+        userData.createdAt = now;
+      }
 
-      await setDoc(newUserRef, userData);
+      const usersRef = collection(db, 'posts');
+      const newUserRef = currentPost ? doc(usersRef, currentPost.id) : doc(usersRef);
+
+      if (currentPost) {
+        // Si c'est une mise à jour, utilisez updateDoc pour ne pas écraser createdAt
+        await updateDoc(newUserRef, userData);
+      } else {
+        // Si c'est un nouveau post, utilisez setDoc
+        await setDoc(newUserRef, userData);
+      }
 
       reset();
       toast.success(currentPost ? 'Update success!' : 'Create success!');

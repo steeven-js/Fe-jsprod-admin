@@ -62,6 +62,8 @@ export function PostDetailsHomeView({ post, latestPosts, loading, error }) {
         author={post?.author}
         coverUrl={post?.coverUrl ?? ''}
         createdAt={post?.createdAt}
+        authorAvatarUrl={post.author?.[0]?.avatarUrl}
+        authorName={post.author?.[0]?.name || 'Author'}
       />
 
       <Container
