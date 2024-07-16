@@ -19,8 +19,6 @@ export default function Page() {
   const [postLoading, setPostLoading] = useState(true);
   const [postError, setPostError] = useState(null);
 
-  console.log('latestPosts:', latestPosts);
-
   useEffect(() => {
     const getPost = async () => {
       if (!slug) return;

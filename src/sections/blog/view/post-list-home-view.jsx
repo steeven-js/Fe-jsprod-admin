@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import { paths } from 'src/routes/paths';
 
 import { useDebounce } from 'src/hooks/use-debounce';
+import { useSearchPosts } from 'src/hooks/use-posts';
 
 import { orderBy } from 'src/utils/helper';
 
@@ -15,7 +16,6 @@ import { POST_SORT_OPTIONS } from 'src/_mock';
 import { PostList } from '../post-list';
 import { PostSort } from '../post-sort';
 import { PostSearch } from '../post-search';
-import { useSearchPosts } from 'src/hooks/use-posts';
 
 // ----------------------------------------------------------------------
 

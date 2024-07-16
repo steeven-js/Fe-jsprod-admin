@@ -34,7 +34,6 @@ export function PostItemHorizontal({ post }) {
 
   const {
     title,
-    author,
     publish,
     coverUrl,
     createdAt,
@@ -43,8 +42,6 @@ export function PostItemHorizontal({ post }) {
     totalComments,
     description,
   } = post;
-
-  console.log('Post:', post);
 
   return (
     <>
