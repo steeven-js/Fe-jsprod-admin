@@ -44,6 +44,8 @@ export function PostItemHorizontal({ post }) {
     description,
   } = post;
 
+  console.log('Post:', post);
+
   return (
     <>
       <Card sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -116,8 +118,8 @@ export function PostItemHorizontal({ post }) {
           }}
         >
           <Avatar
-            alt={author.name}
-            src={author.avatarUrl}
+            alt={post.author?.[0]?.name || 'Author'}
+            src={post.author?.[0]?.avatarUrl}
             sx={{ top: 16, right: 16, zIndex: 9, position: 'absolute' }}
           />
           <Image alt={title} src={coverUrl} sx={{ height: 1, borderRadius: 1.5 }} />
