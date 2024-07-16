@@ -23,10 +23,8 @@ export function PostSearch({ query, results, onSearch, hrefItem, loading }) {
   };
 
   const handleKeyUp = (event) => {
-    if (query) {
-      if (event.key === 'Enter') {
-        handleClick(query);
-      }
+    if (query && event.key === 'Enter' && results.length > 0) {
+      handleClick(results[0].title);
     }
   };
 
@@ -36,10 +34,10 @@ export function PostSearch({ query, results, onSearch, hrefItem, loading }) {
       loading={loading}
       autoHighlight
       popupIcon={null}
-      options={results}
+      options={query.length > 2 ? results : []}
       onInputChange={(event, newValue) => onSearch(newValue)}
       getOptionLabel={(option) => option.title}
-      noOptionsText={<SearchNotFound query={query} />}
+      noOptionsText={query ? <SearchNotFound query={query} /> : 'Start typing to search...'}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       slotProps={{
         popper: { placement: 'bottom-start', sx: { minWidth: 320 } },

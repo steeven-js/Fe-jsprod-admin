@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect, useCallback } from 'react';
 
 // ----------------------------------------------------------------------
 
-export function useDebounce(value, delay = 500) {
+export function useDebounce(value, delay = 100) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   const debounceHandler = useCallback(() => {
