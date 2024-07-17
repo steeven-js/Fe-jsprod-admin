@@ -13,7 +13,7 @@ import {
 
 import { db } from 'src/utils/firebase';
 
-export function usePosts(sortBy = 'latest', searchQuery = '') {
+export function usePosts(sortBy = 'latest', searchQuery = '', publish = 'all') {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +33,13 @@ export function usePosts(sortBy = 'latest', searchQuery = '') {
         } else {
           const orderByField = sortBy === 'popular' ? 'totalViews' : 'createdAt';
           const orderDirection = sortBy === 'oldest' ? 'asc' : 'desc';
-          q = query(collection(db, 'posts'), orderBy(orderByField, orderDirection), limit(20));
+          const constraints = [orderBy(orderByField, orderDirection), limit(20)];
+
+          if (publish !== 'all') {
+            constraints.push(where('publish', '==', publish));
+          }
+
+          q = query(collection(db, 'posts'), ...constraints);
         }
 
         const querySnapshot = await getDocs(q);
@@ -50,7 +56,7 @@ export function usePosts(sortBy = 'latest', searchQuery = '') {
     }
 
     fetchPosts();
-  }, [sortBy, searchQuery]);
+  }, [sortBy, searchQuery, publish]);
 
   return { posts, loading };
 }

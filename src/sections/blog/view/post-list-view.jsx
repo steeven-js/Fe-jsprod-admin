@@ -8,14 +8,13 @@ import Button from '@mui/material/Button';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { usePosts } from 'src/hooks/use-posts';
 import { useDebounce } from 'src/hooks/use-debounce';
 import { useSetState } from 'src/hooks/use-set-state';
+import { usePosts, useSearchPosts } from 'src/hooks/use-posts';
 
 import { orderBy } from 'src/utils/helper';
 
 import { POST_SORT_OPTIONS } from 'src/_mock';
-import { useSearchPosts } from 'src/actions/blog';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Label } from 'src/components/label';
@@ -30,16 +29,16 @@ import { PostListHorizontal } from '../post-list-horizontal';
 
 export function PostListView() {
   const [sortBy, setSortBy] = useState('latest');
-
-  const { posts, loading } = usePosts();
-
   const [searchQuery, setSearchQuery] = useState('');
+
+  const filters = useSetState({ publish: 'all' });
+  console.log('filters', filters.state);
 
   const debouncedQuery = useDebounce(searchQuery);
 
-  const { searchResults, searchLoading } = useSearchPosts(debouncedQuery);
+  const { posts, loading } = usePosts(sortBy, debouncedQuery, filters.state.publish);
 
-  const filters = useSetState({ publish: 'all' });
+  const { searchResults, searchLoading } = useSearchPosts(debouncedQuery);
 
   const dataFiltered = applyFilter({ inputData: posts, filters: filters.state, sortBy });
 
@@ -126,7 +125,7 @@ export function PostListView() {
         ))}
       </Tabs>
 
-      <PostListHorizontal posts={posts} loading={loading} />
+      <PostListHorizontal posts={dataFiltered} loading={loading} />
     </DashboardContent>
   );
 }
@@ -134,21 +133,23 @@ export function PostListView() {
 const applyFilter = ({ inputData, filters, sortBy }) => {
   const { publish } = filters;
 
+  let filteredData = inputData;
+
+  if (publish !== 'all') {
+    filteredData = filteredData.filter((post) => post.publish === publish);
+  }
+
   if (sortBy === 'latest') {
-    inputData = orderBy(inputData, ['createdAt'], ['desc']);
+    filteredData = orderBy(filteredData, ['createdAt'], ['desc']);
   }
 
   if (sortBy === 'oldest') {
-    inputData = orderBy(inputData, ['createdAt'], ['asc']);
+    filteredData = orderBy(filteredData, ['createdAt'], ['asc']);
   }
 
   if (sortBy === 'popular') {
-    inputData = orderBy(inputData, ['totalViews'], ['desc']);
+    filteredData = orderBy(filteredData, ['totalViews'], ['desc']);
   }
 
-  if (publish !== 'all') {
-    inputData = inputData.filter((post) => post.publish === publish);
-  }
-
-  return inputData;
+  return filteredData;
 };
