@@ -11,12 +11,12 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 
+import { useUpdateUserProfile } from 'src/hooks/use-auth';
+
 import { fData } from 'src/utils/format-number';
 
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaHelper } from 'src/components/hook-form';
-
-import { useMockedUser } from 'src/auth/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -42,21 +42,21 @@ export const UpdateUserSchema = zod.object({
   isPublic: zod.boolean(),
 });
 
-export function AccountGeneral() {
-  const { user } = useMockedUser();
+export function AccountGeneral({ user, userProfile }) {
+  const { updateUserProfile, error } = useUpdateUserProfile();
 
   const defaultValues = {
-    displayName: user?.displayName || '',
-    email: user?.email || '',
-    photoURL: user?.photoURL || null,
-    phoneNumber: user?.phoneNumber || '',
-    country: user?.country || '',
-    address: user?.address || '',
-    state: user?.state || '',
-    city: user?.city || '',
-    zipCode: user?.zipCode || '',
-    about: user?.about || '',
-    isPublic: user?.isPublic || false,
+    displayName: userProfile?.displayName || '',
+    email: userProfile?.email || '',
+    photoURL: userProfile?.photoURL || null,
+    phoneNumber: userProfile?.phoneNumber || '',
+    country: userProfile?.country || '',
+    address: userProfile?.address || '',
+    state: userProfile?.state || '',
+    city: userProfile?.city || '',
+    zipCode: userProfile?.zipCode || '',
+    about: userProfile?.about || '',
+    isPublic: userProfile?.isPublic || false,
   };
 
   const methods = useForm({
@@ -72,11 +72,18 @@ export function AccountGeneral() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      toast.success('Update success!');
+      await updateUserProfile(data);
+      if (!error) {
+        toast.success('Update success!');
+      } else {
+        // eslint-disable-next-line prefer-template
+        toast.error('Update failed: ' + error);
+      }
       console.info('DATA', data);
-    } catch (error) {
-      console.error(error);
+    } catch (_error) {
+      console.error(_error);
+      // eslint-disable-next-line prefer-template
+      toast.error('Update failed: ' + _error.message);
     }
   });
 
@@ -116,6 +123,7 @@ export function AccountGeneral() {
               name="isPublic"
               labelPlacement="start"
               label="Public profile"
+              value={userProfile?.isPublic ? 'true' : 'false'}
               sx={{ mt: 5 }}
             />
 
