@@ -32,7 +32,6 @@ export function PostListView() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filters = useSetState({ publish: 'all' });
-  console.log('filters', filters.state);
 
   const debouncedQuery = useDebounce(searchQuery);
 
