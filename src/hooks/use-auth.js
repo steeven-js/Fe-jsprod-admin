@@ -57,7 +57,7 @@ export function useUpdateUserProfile() {
       // Update Firebase Auth user profile
       const authUpdateData = {};
       if (newData.displayName) authUpdateData.displayName = newData.displayName;
-      if (newData.photoURL) authUpdateData.photoURL = newData.photoURL;
+      if (newData.photoUrl) authUpdateData.photoUrl = newData.photoUrl;
 
       if (Object.keys(authUpdateData).length > 0) {
         await updateProfile(auth.currentUser, authUpdateData);
@@ -78,4 +78,25 @@ export function useUpdateUserProfile() {
   };
 
   return { updateUserProfile, isUpdating, error };
+}
+
+// UpdateFirebasePassword de l'utilisateur connecté
+export function useUpdateFirebasePassword() {
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [error, setError] = useState(null);
+
+  const updateFirebasePassword = async (newPassword) => {
+    setIsUpdating(true);
+    setError(null);
+
+    try {
+      await updatePassword(auth.currentUser, newPassword);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  return { updateFirebasePassword, isUpdating, error };
 }
