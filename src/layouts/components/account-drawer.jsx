@@ -104,32 +104,6 @@ export function AccountDrawer({ data = [], sx, ...other }) {
             </Typography>
           </Stack>
 
-          {/* <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="center" sx={{ p: 3 }}>
-            {[...Array(3)].map((_, index) => (
-              <Tooltip
-                key={_mock.fullName(index + 1)}
-                title={`Switch to: ${_mock.fullName(index + 1)}`}
-              >
-                <Avatar
-                  alt={_mock.fullName(index + 1)}
-                  src={_mock.image.avatar(index + 1)}
-                  onClick={() => {}}
-                />
-              </Tooltip>
-            ))}
-
-            <Tooltip title="Add account">
-              <IconButton
-                sx={{
-                  bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
-                  border: `dashed 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.32)}`,
-                }}
-              >
-                <Iconify icon="mingcute:add-line" />
-              </IconButton>
-            </Tooltip>
-          </Stack> */}
-
           <Stack
             sx={{
               py: 3,
@@ -139,14 +113,22 @@ export function AccountDrawer({ data = [], sx, ...other }) {
             }}
           >
             {data.map((option) => {
-              const rootLabel = pathname.includes('/dashboard') ? 'Home' : 'Dashboard';
+              let rootLabel = option.label;
+              let rootHref = option.href;
 
-              const rootHref = pathname.includes('/dashboard') ? '/' : paths.dashboard.root;
+              if (option.label === 'Home') {
+                rootLabel = pathname.includes('/dashboard') ? 'Home' : 'Dashboard';
+                rootHref = pathname.includes('/dashboard') ? '/' : paths.dashboard.root;
+              } else if (option.label === 'Profile') {
+                rootHref = paths.dashboard.user.profile(userProfile?.uid);
+              } else if (option.label === 'Account settings') {
+                rootHref = paths.dashboard.user.account;
+              }
 
               return (
                 <MenuItem
                   key={option.label}
-                  onClick={() => handleClickItem(option.label === 'Home' ? rootHref : option.href)}
+                  onClick={() => handleClickItem(rootHref)}
                   sx={{
                     py: 1,
                     color: 'text.secondary',
@@ -157,7 +139,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
                   {option.icon}
 
                   <Box component="span" sx={{ ml: 2 }}>
-                    {option.label === 'Home' ? rootLabel : option.label}
+                    {rootLabel}
                   </Box>
 
                   {option.info && (
