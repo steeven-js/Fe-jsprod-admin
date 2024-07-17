@@ -74,8 +74,6 @@ export function HeaderBase({
 }) {
   const theme = useTheme();
 
-  console.log('data?.account', data?.account);
-
   return (
     <HeaderSection
       sx={sx}
