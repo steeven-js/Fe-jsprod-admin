@@ -153,7 +153,8 @@ export function useSearchPosts(searchQuery) {
     }
 
     fetchPosts();
-  }, [searchQuery]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { searchResults, searchLoading };
 }

@@ -18,6 +18,8 @@ import { SearchNotFound } from 'src/components/search-not-found';
 export function PostSearch({ query, results, onSearch, hrefItem, loading }) {
   const router = useRouter();
 
+  console.log('results', results);
+
   const handleClick = (title) => {
     router.push(hrefItem(title));
   };

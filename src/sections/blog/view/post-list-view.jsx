@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
+import { usePosts } from 'src/hooks/use-posts';
 import { useDebounce } from 'src/hooks/use-debounce';
 import { useSetState } from 'src/hooks/use-set-state';
 
@@ -16,7 +17,6 @@ import { orderBy } from 'src/utils/helper';
 import { POST_SORT_OPTIONS } from 'src/_mock';
 import { useSearchPosts } from 'src/actions/blog';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { fetchAllPosts } from 'src/actions/firebase-blog';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
@@ -31,9 +31,9 @@ import { PostListHorizontal } from '../post-list-horizontal';
 export function PostListView() {
   const [sortBy, setSortBy] = useState('latest');
 
+  const { posts, loading } = usePosts();
+
   const [searchQuery, setSearchQuery] = useState('');
-  const [posts, setPosts] = useState([]);
-  const [postsLoading, setPostsLoading] = useState(false);
 
   const debouncedQuery = useDebounce(searchQuery);
 
@@ -42,26 +42,6 @@ export function PostListView() {
   const filters = useSetState({ publish: 'all' });
 
   const dataFiltered = applyFilter({ inputData: posts, filters: filters.state, sortBy });
-
-  // ==========================================================
-  // Firebase: Fetch and Log Posts
-  // ==========================================================
-  const fetchPosts = async () => {
-    try {
-      setPostsLoading(true);
-      const fetchedPosts = await fetchAllPosts();
-      setPosts(fetchedPosts);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-    } finally {
-      setPostsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-  // ==========================================================
 
   const handleSortBy = useCallback((newValue) => {
     setSortBy(newValue);
@@ -146,7 +126,7 @@ export function PostListView() {
         ))}
       </Tabs>
 
-      <PostListHorizontal posts={posts} loading={postsLoading} />
+      <PostListHorizontal posts={posts} loading={loading} />
     </DashboardContent>
   );
 }
