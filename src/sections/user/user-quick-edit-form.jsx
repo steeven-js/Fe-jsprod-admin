@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isValidPhoneNumber } from 'react-phone-number-input/input';
+import { doc, setDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
@@ -14,10 +15,13 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
+import { db } from 'src/utils/firebase';
+
 import { USER_STATUS_OPTIONS } from 'src/_mock';
 
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaHelper } from 'src/components/hook-form';
+
 
 // ----------------------------------------------------------------------
 
@@ -74,23 +78,38 @@ export function UserQuickEditForm({ currentUser, open, onClose }) {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    const promise = new Promise((resolve) => setTimeout(resolve, 1000));
-
     try {
+      // Référence à la collection 'users' dans Firestore
+      const usersRef = collection(db, 'users');
+      // Crée une référence de document pour un nouvel utilisateur ou un utilisateur existant
+      const userRef = currentUser?.id ? doc(usersRef, currentUser.id) : doc(usersRef);
+
+      // Prépare les données utilisateur à enregistrer
+      const userData = {
+        ...data,
+        updatedAt: serverTimestamp(), // Ajoute un horodatage de mise à jour
+      };
+
+      // Crée une promesse pour l'opération d'enregistrement
+      const savePromise = setDoc(userRef, userData, { merge: true });
+
+      // Affiche un message de chargement/succès/erreur
+      toast.promise(savePromise, {
+        loading: 'Saving...',
+        success: currentUser?.id ? 'User updated successfully!' : 'User created successfully!',
+        error: 'An error occurred while saving the user.',
+      });
+
+      // Réinitialise le formulaire et ferme le modal après la sauvegarde réussie
       reset();
       onClose();
 
-      toast.promise(promise, {
-        loading: 'Loading...',
-        success: 'Update success!',
-        error: 'Update error!',
-      });
-
-      await promise;
-
-      console.info('DATA', data);
+      // Affiche les données utilisateur dans la console pour le débogage
+      console.info('User data saved:', userData);
     } catch (error) {
-      console.error(error);
+      // Affiche une erreur dans la console en cas de problème
+      console.error('Error saving user:', error);
+      // L'erreur sera affichée par toast.promise, pas besoin d'un toast.error supplémentaire ici
     }
   });
 
