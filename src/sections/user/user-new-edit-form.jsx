@@ -2,7 +2,7 @@ import { z as zod } from 'zod';
 import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
-import { doc, setDoc, collection } from 'firebase/firestore';
+import { doc, setDoc, collection, updateDoc } from 'firebase/firestore';
 import { isValidPhoneNumber } from 'react-phone-number-input/input';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -132,15 +132,19 @@ export function UserNewEditForm({ currentUser }) {
       // Référence à la collection 'users' dans Firestore
       const usersRef = collection(db, 'users');
       // Crée une référence de document pour un nouvel utilisateur ou un utilisateur existant
-      const newUserRef = currentUser?.id ? doc(usersRef, currentUser.id) : doc(usersRef);
+      const userRef = currentUser?.id ? doc(usersRef, currentUser.id) : doc(usersRef);
 
-      // Enregistre les données utilisateur dans Firestore
-      await setDoc(newUserRef, userData);
+      // Met à jour ou crée les données utilisateur dans Firestore
+      if (currentUser?.id) {
+        await updateDoc(userRef, userData);
+        toast.success('Update success!');
+      } else {
+        await setDoc(userRef, userData);
+        toast.success('Create success!');
+      }
 
       // Réinitialise le formulaire après la soumission
       reset();
-      // Affiche un message de succès
-      toast.success(currentUser ? 'Update success!' : 'Create success!');
       // Redirige l'utilisateur vers la liste des utilisateurs du tableau de bord
       router.push(paths.dashboard.user.list);
       // Affiche les données utilisateur dans la console pour le débogage
