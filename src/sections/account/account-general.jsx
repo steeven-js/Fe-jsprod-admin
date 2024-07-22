@@ -21,7 +21,7 @@ import { Form, Field, schemaHelper } from 'src/components/hook-form';
 // ----------------------------------------------------------------------
 
 export const UpdateUserSchema = zod.object({
-  displayName: zod.string().min(1, { message: 'Name is required!' }),
+  name: zod.string().min(1, { message: 'Name is required!' }),
   email: zod
     .string()
     .min(1, { message: 'Email is required!' })
@@ -46,7 +46,7 @@ export function AccountGeneral({ user, userProfile }) {
   const { updateUserProfile, error } = useUpdateUserProfile();
 
   const defaultValues = {
-    displayName: userProfile?.displayName || '',
+    name: userProfile?.name || '',
     email: userProfile?.email || '',
     photoURL: userProfile?.photoURL || null,
     phoneNumber: userProfile?.phoneNumber || '',
@@ -144,7 +144,7 @@ export function AccountGeneral({ user, userProfile }) {
                 sm: 'repeat(2, 1fr)',
               }}
             >
-              <Field.Text name="displayName" label="Name" />
+              <Field.Text name="name" label="Name" />
               <Field.Text name="email" label="Email address" />
               <Field.Phone name="phoneNumber" label="Phone number" />
               <Field.Text name="address" label="Address" />
