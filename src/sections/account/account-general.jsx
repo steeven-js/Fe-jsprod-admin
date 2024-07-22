@@ -26,7 +26,7 @@ export const UpdateUserSchema = zod.object({
     .string()
     .min(1, { message: 'Email is required!' })
     .email({ message: 'Email must be a valid email address!' }),
-  photoURL: schemaHelper.file({
+  avatarUrl: schemaHelper.file({
     message: { required_error: 'Avatar is required!' },
   }),
   phoneNumber: schemaHelper.phoneNumber({ isValidPhoneNumber }),
@@ -48,7 +48,7 @@ export function AccountGeneral({ user, userProfile }) {
   const defaultValues = {
     name: userProfile?.name || '',
     email: userProfile?.email || '',
-    photoURL: userProfile?.photoURL || null,
+    avatarUrl: userProfile?.avatarUrl || null,
     phoneNumber: userProfile?.phoneNumber || '',
     country: userProfile?.country || '',
     address: userProfile?.address || '',
@@ -100,7 +100,7 @@ export function AccountGeneral({ user, userProfile }) {
             }}
           >
             <Field.UploadAvatar
-              name="photoURL"
+              name="avatarUrl"
               maxSize={3145728}
               helperText={
                 <Typography
