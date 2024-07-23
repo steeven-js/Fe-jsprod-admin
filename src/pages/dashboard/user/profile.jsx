@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useParams } from 'src/routes/hooks';
+
 import { useUserById } from 'src/hooks/use-users';
 
 import { CONFIG } from 'src/config-global';
