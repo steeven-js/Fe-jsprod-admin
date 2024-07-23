@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { doc, updateDoc, onSnapshot, collection } from 'firebase/firestore';
-
-import { toast } from 'src/components/snackbar';
+import { doc, setDoc, updateDoc, onSnapshot, collection } from 'firebase/firestore';
 
 import { db, storage } from 'src/utils/firebase';
+
+import { toast } from 'src/components/snackbar';
 
 // ----------------------------------------------------------------------
 // All Users
@@ -38,11 +38,11 @@ export function useUsersData() {
     return () => unsubscribe();
   }, []);
 
-  const updateUsers = useCallback((newUsers) => {
+  const _updateUsers = useCallback((newUsers) => {
     setUsers(newUsers);
   }, []);
 
-  return { users, loading, updateUsers };
+  return { users, loading, _updateUsers };
 }
 
 // ----------------------------------------------------------------------
