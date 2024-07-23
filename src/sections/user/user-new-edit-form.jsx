@@ -1,10 +1,8 @@
 import { z as zod } from 'zod';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import { isValidPhoneNumber } from 'react-phone-number-input/input';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { doc, setDoc, updateDoc, collection } from 'firebase/firestore';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -20,11 +18,11 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
 import { fData } from 'src/utils/format-number';
-import { db, storage } from 'src/utils/firebase';
 
 import { Label } from 'src/components/label';
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaHelper } from 'src/components/hook-form';
+import { updateUsers } from 'src/hooks/use-users';
 
 // ----------------------------------------------------------------------
 
@@ -56,6 +54,7 @@ export const NewUserSchema = zod.object({
 
 export function UserNewEditForm({ currentUser }) {
   const router = useRouter();
+  const [_isSubmitting, setIsSubmitting] = useState(false);
 
   // Initialisation du formulaire avec des valeurs par défaut
   const defaultValues = useMemo(
@@ -99,61 +98,18 @@ export function UserNewEditForm({ currentUser }) {
   const values = watch();
 
   const onSubmit = handleSubmit(async (data) => {
+    setIsSubmitting(true);
     try {
-      // Simule un délai pour montrer l'état de chargement
-      await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Déstructuration de l'objet data pour extraire avatarUrl et les autres données
-      const { avatarUrl: initialAvatarUrl, ...otherData } = data;
+      await updateUsers({ currentUser, data });
 
-      let avatarUrl = initialAvatarUrl;
-
-      // Vérifiez si un nouveau fichier avatar a été fourni
-      if (data.avatarUrl && data.avatarUrl instanceof File) {
-        // Génère un ID utilisateur si aucun ID actuel n'est présent
-        const userId = currentUser?.id || doc(collection(db, 'users')).id;
-        // Crée un chemin de fichier unique pour le stockage de l'avatar
-        const fileName = `avatars/${userId}/${Date.now()}_${data.avatarUrl.name}`;
-        // Référence au fichier dans le stockage Firebase
-        const storageRef = ref(storage, fileName);
-
-        // Télécharge le fichier avatar dans le stockage Firebase
-        await uploadBytes(storageRef, data.avatarUrl);
-        // Récupère l'URL de téléchargement du fichier avatar
-        avatarUrl = await getDownloadURL(storageRef);
-      }
-
-      // Crée un objet de données utilisateur avec l'URL de l'avatar mise à jour
-      const userData = {
-        ...otherData,
-        avatarUrl,
-      };
-
-      // Référence à la collection 'users' dans Firestore
-      const usersRef = collection(db, 'users');
-      // Crée une référence de document pour un nouvel utilisateur ou un utilisateur existant
-      const userRef = currentUser?.id ? doc(usersRef, currentUser.id) : doc(usersRef);
-
-      // Met à jour ou crée les données utilisateur dans Firestore
-      if (currentUser?.id) {
-        await updateDoc(userRef, userData);
-        toast.success('Update success!');
-      } else {
-        await setDoc(userRef, userData);
-        toast.success('Create success!');
-      }
-
-      // Réinitialise le formulaire après la soumission
       reset();
-      // Redirige l'utilisateur vers la liste des utilisateurs du tableau de bord
       router.push(paths.dashboard.user.list);
-      // Affiche les données utilisateur dans la console pour le débogage
-      console.info('DATA', userData);
     } catch (error) {
-      // Affiche une erreur dans la console en cas de problème
       console.error(error);
-      // Affiche un message d'erreur
-      toast.error('An error occurred');
+      toast.error('Une erreur est survenue lors de la mise à jour');
+    } finally {
+      setIsSubmitting(false);
     }
   });
 
