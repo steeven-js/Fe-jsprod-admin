@@ -3,7 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { useAuth } from 'src/hooks/use-auth';
+import { useParams } from 'src/routes/hooks';
+import { useUserById } from 'src/hooks/use-users';
 
 import { CONFIG } from 'src/config-global';
 
@@ -14,8 +15,9 @@ import { UserProfileView } from 'src/sections/user/view';
 const metadata = { title: `User profile | Dashboard - ${CONFIG.site.name}` };
 
 export default function Page() {
-  const { userId, userProfile, loading } = useAuth();
+  const { id = '' } = useParams();
 
+  const {user, loading} = useUserById(id);
 
   return (
     <>
@@ -28,7 +30,7 @@ export default function Page() {
           <CircularProgress />
         </Box>
       ) : (
-        <UserProfileView userId={userId} userProfile={userProfile} />
+        <UserProfileView userId={user.id} userProfile={user} />
       )}
 
     </>
