@@ -6,6 +6,7 @@ import { db, auth } from 'src/utils/firebase';
 
 export function useAuth() {
   const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -13,12 +14,12 @@ export function useAuth() {
     const unsubscribe = onAuthStateChanged(auth, async (_user) => {
       if (_user) {
         setUser(_user);
+        setUserId(_user.uid);
         // Récupérer le profil utilisateur depuis Firestore
         try {
-          const userProfileDoc = doc(db, 'users', _user.uid);
-          const userProfileSnapshot = await getDoc(userProfileDoc);
-          if (userProfileSnapshot.exists()) {
-            setUserProfile(userProfileSnapshot.data());
+          const userProfileDoc = await getDoc(doc(db, 'users', _user.uid));
+          if (userProfileDoc.exists()) {
+            setUserProfile(userProfileDoc.data());
           } else {
             console.log("Le profil utilisateur n'existe pas");
           }
@@ -27,16 +28,16 @@ export function useAuth() {
         }
       } else {
         setUser(null);
+        setUserId(null);
         setUserProfile(null);
       }
       setLoading(false);
     });
 
-    // Nettoyer l'abonnement lors du démontage du composant
-    return () => unsubscribe();
+    return unsubscribe;
   }, []);
 
-  return { user, userProfile, loading };
+  return { user, userId, userProfile, loading };
 }
 
 export function useUpdateUserProfile() {
