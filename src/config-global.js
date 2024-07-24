@@ -62,4 +62,11 @@ export const CONFIG = {
     url: import.meta.env.VITE_SUPABASE_URL ?? '',
     key: import.meta.env.VITE_SUPABASE_ANON_KEY ?? '',
   },
+  cv: {
+    url: import.meta.env.VITE_CV_PDF_URL ?? '',
+  },
+  app: {
+    ios: import.meta.env.VITE_APP_IOS_URL ?? '',
+    android: import.meta.env.VITE_APP_ANDROID_URL ?? '',
+  }
 };

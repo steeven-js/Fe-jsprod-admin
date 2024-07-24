@@ -2,17 +2,14 @@ import { m } from 'framer-motion';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
-
-import { paths } from 'src/routes/paths';
 
 import { CONFIG } from 'src/config-global';
 import { varAlpha, stylesMode } from 'src/theme/styles';
 
-import { Iconify } from 'src/components/iconify';
 import { varFade, MotionViewport } from 'src/components/animate';
+import AppStoreButtons from 'src/components/app-store-buttons/appStoreButtons ';
 
 import { SectionTitle } from './components/section-title';
 import { FloatLine, CircleSvg, FloatTriangleDownIcon } from './components/svg-elements';
@@ -84,20 +81,7 @@ export function HomeZoneUI({ sx, ...other }) {
       />
 
       <Box sx={{ p: 0.5, borderRadius: '0 0 8px 8px', bgcolor: 'common.white' }}>
-        <Button
-          variant="contained"
-          target="_blank"
-          rel="noopener"
-          href={paths.zoneStore}
-          endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
-          sx={{
-            color: 'grey.800',
-            bgcolor: 'common.white',
-            '&:hover': { bgcolor: 'common.white' },
-          }}
-        >
-          Visit Zone UI
-        </Button>
+        <AppStoreButtons />
       </Box>
     </Stack>
   );

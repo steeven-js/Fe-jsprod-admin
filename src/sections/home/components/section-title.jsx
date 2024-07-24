@@ -54,6 +54,7 @@ export function SectionTitle({ title, caption, slotProps, txtGradient, descripti
           {description}
         </Typography>
       )}
+
     </Stack>
   );
 }
