@@ -137,7 +137,7 @@ export function PostNewEditForm({ currentPost }) {
             avatarUrl: auth.currentUser.photoURL
               ? auth.currentUser.photoURL
               : 'https://api-dev-minimal-v6.vercel.app/assets/images/avatar/avatar-25.webp',
-            name: auth.currentUser.displayName ? auth.currentUser.displayName : 'Jacques Steeven',
+            name: auth.currentUser.displayName ? auth.currentUser.displayName : 'Author',
           },
         ],
         updatedAt: now,
