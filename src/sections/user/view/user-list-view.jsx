@@ -23,7 +23,7 @@ import { useSetState } from 'src/hooks/use-set-state';
 import { db } from 'src/utils/firebase';
 
 import { varAlpha } from 'src/theme/styles';
-import { _roles, USER_STATUS_OPTIONS } from 'src/_mock';
+import { USER_STATUS_OPTIONS } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Label } from 'src/components/label';
@@ -59,6 +59,16 @@ const TABLE_HEAD = [
   { id: 'role', label: 'Role', width: 180 },
   { id: 'status', label: 'Status', width: 100 },
   { id: '', width: 88 },
+];
+
+// ----------------------------------------------------------------------
+
+const ROLE_OPTIONS = [
+  'User',
+  'Admin',
+  'Editor',
+  'Manager',
+  'Developer',
 ];
 
 // ----------------------------------------------------------------------
@@ -220,7 +230,7 @@ export function UserListView() {
           <UserTableToolbar
             filters={filters}
             onResetPage={table.onResetPage}
-            options={{ roles: _roles }}
+            options={{ roles: ROLE_OPTIONS }}
           />
 
           {canReset && (

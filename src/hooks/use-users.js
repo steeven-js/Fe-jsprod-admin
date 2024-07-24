@@ -133,3 +133,28 @@ export async function updateUsers({ currentUser, data }) {
       toast.success('Création réussie !');
   }
 }
+
+export async function updateFastUsers({ currentUser, data }) {
+  // Crée un objet de données utilisateur
+  const userData = { ...data };
+
+  // Référence à la collection 'users' dans Firestore
+  const usersRef = collection(db, 'users');
+
+  try {
+    // Crée une référence de document pour un nouvel utilisateur ou un utilisateur existant
+    const userRef = currentUser?.id ? doc(usersRef, currentUser.id) : doc(usersRef);
+
+    // Met à jour ou crée les données utilisateur dans Firestore
+    if (currentUser?.id) {
+      await updateDoc(userRef, userData);
+      toast.success('Mise à jour réussie !');
+    } else {
+      await setDoc(userRef, userData);
+      toast.success('Création réussie !');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour/création de l\'utilisateur:', error);
+    toast.error('Une erreur est survenue lors de l\'opération');
+  }
+}

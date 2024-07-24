@@ -27,6 +27,16 @@ import { Form, Field, schemaHelper } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
 
+const ROLE_OPTIONS = [
+  'User',
+  'Admin',
+  'Editor',
+  'Manager',
+  'Developer',
+];
+
+// ----------------------------------------------------------------------
+
 export const NewUserSchema = zod.object({
   avatarUrl: schemaHelper.file({
     message: { required_error: 'Avatar is required!' },
@@ -44,7 +54,9 @@ export const NewUserSchema = zod.object({
   company: zod.string().min(1, { message: 'Company is required!' }),
   state: zod.string().min(1, { message: 'State is required!' }),
   city: zod.string().min(1, { message: 'City is required!' }),
-  role: zod.string().min(1, { message: 'Role is required!' }),
+  role: schemaHelper.objectOrNull({
+    message: { required_error: 'Role is required!' },
+  }),
   zipCode: zod.string().min(1, { message: 'Zip code is required!' }),
   // Not required
   status: zod.string(),
@@ -72,7 +84,7 @@ export function UserNewEditForm({ currentUser }) {
       address: currentUser?.address || '',
       zipCode: currentUser?.zipCode || '',
       company: currentUser?.company || '',
-      role: currentUser?.role || '',
+      role: currentUser?.role || ROLE_OPTIONS[0],
     }),
     [currentUser]
   );
@@ -101,7 +113,6 @@ export function UserNewEditForm({ currentUser }) {
   const onSubmit = handleSubmit(async (data) => {
     setIsSubmitting(true);
     try {
-
       await updateUsers({ currentUser, data });
 
       reset();
@@ -244,7 +255,18 @@ export function UserNewEditForm({ currentUser }) {
               <Field.Text name="address" label="Address" />
               <Field.Text name="zipCode" label="Zip/code" />
               <Field.Text name="company" label="Company" />
-              <Field.Text name="role" label="Role" />
+
+              <Field.Autocomplete
+                name="role"
+                autoHighlight
+                options={ROLE_OPTIONS.map((option) => option)}
+                getOptionLabel={(option) => option}
+                renderOption={(props, option) => (
+                  <li {...props} key={option}>
+                    {option}
+                  </li>
+                )}
+              />
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>

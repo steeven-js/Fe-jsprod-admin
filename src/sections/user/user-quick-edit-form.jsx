@@ -1,9 +1,8 @@
 import { z as zod } from 'zod';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isValidPhoneNumber } from 'react-phone-number-input/input';
-import { doc, setDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
@@ -15,13 +14,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
-import { db } from 'src/utils/firebase';
+import { updateFastUsers } from 'src/hooks/use-users';
 
 import { USER_STATUS_OPTIONS } from 'src/_mock';
 
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaHelper } from 'src/components/hook-form';
-
 
 // ----------------------------------------------------------------------
 
@@ -40,14 +38,27 @@ export const UserQuickEditSchema = zod.object({
   address: zod.string().min(1, { message: 'Address is required!' }),
   zipCode: zod.string().min(1, { message: 'Zip code is required!' }),
   company: zod.string().min(1, { message: 'Company is required!' }),
-  role: zod.string().min(1, { message: 'Role is required!' }),
+  role: schemaHelper.objectOrNull({
+    message: { required_error: 'Role is required!' },
+  }),
   // Not required
   status: zod.string(),
 });
 
 // ----------------------------------------------------------------------
 
+const ROLE_OPTIONS = [
+  'User',
+  'Admin',
+  'Editor',
+  'Manager',
+  'Developer',
+];
+
+// ----------------------------------------------------------------------
+
 export function UserQuickEditForm({ currentUser, open, onClose }) {
+  const [_isSubmitting, setIsSubmitting] = useState(false);
   const defaultValues = useMemo(
     () => ({
       name: currentUser?.name || '',
@@ -60,7 +71,7 @@ export function UserQuickEditForm({ currentUser, open, onClose }) {
       zipCode: currentUser?.zipCode || '',
       status: currentUser?.status,
       company: currentUser?.company || '',
-      role: currentUser?.role || '',
+      role: currentUser?.role || ROLE_OPTIONS[0],
     }),
     [currentUser]
   );
@@ -78,38 +89,18 @@ export function UserQuickEditForm({ currentUser, open, onClose }) {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
+    setIsSubmitting(true);
     try {
-      // Référence à la collection 'users' dans Firestore
-      const usersRef = collection(db, 'users');
-      // Crée une référence de document pour un nouvel utilisateur ou un utilisateur existant
-      const userRef = currentUser?.id ? doc(usersRef, currentUser.id) : doc(usersRef);
+      await updateFastUsers({ currentUser, data });
+      console.log('data:', data);
 
-      // Prépare les données utilisateur à enregistrer
-      const userData = {
-        ...data,
-        updatedAt: serverTimestamp(), // Ajoute un horodatage de mise à jour
-      };
-
-      // Crée une promesse pour l'opération d'enregistrement
-      const savePromise = setDoc(userRef, userData, { merge: true });
-
-      // Affiche un message de chargement/succès/erreur
-      toast.promise(savePromise, {
-        loading: 'Saving...',
-        success: currentUser?.id ? 'User updated successfully!' : 'User created successfully!',
-        error: 'An error occurred while saving the user.',
-      });
-
-      // Réinitialise le formulaire et ferme le modal après la sauvegarde réussie
       reset();
       onClose();
-
-      // Affiche les données utilisateur dans la console pour le débogage
-      console.info('User data saved:', userData);
     } catch (error) {
-      // Affiche une erreur dans la console en cas de problème
-      console.error('Error saving user:', error);
-      // L'erreur sera affichée par toast.promise, pas besoin d'un toast.error supplémentaire ici
+      console.error(error);
+      toast.error('Une erreur est survenue lors de la mise à jour');
+    } finally {
+      setIsSubmitting(false);
     }
   });
 
@@ -161,7 +152,18 @@ export function UserQuickEditForm({ currentUser, open, onClose }) {
             <Field.Text name="address" label="Address" />
             <Field.Text name="zipCode" label="Zip/code" />
             <Field.Text name="company" label="Company" />
-            <Field.Text name="role" label="Role" />
+
+            <Field.Autocomplete
+              name="role"
+              autoHighlight
+              options={ROLE_OPTIONS.map((option) => option)}
+              getOptionLabel={(option) => option}
+              renderOption={(props, option) => (
+                <li {...props} key={option}>
+                  {option}
+                </li>
+              )}
+            />
           </Box>
         </DialogContent>
 
