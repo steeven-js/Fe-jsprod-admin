@@ -30,7 +30,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
-  const { userProfile } = useAuth();
+  const { userId, userProfile } = useAuth();
 
   const [open, setOpen] = useState(false);
 
@@ -54,7 +54,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
     <AnimateAvatar
       width={96}
       slotProps={{
-        avatar: { src: userProfile?.photoURL, alt: userProfile?.displayName },
+        avatar: { src: userProfile?.avatarUrl, alt: userProfile?.name },
         overlay: {
           border: 2,
           spacing: 3,
@@ -62,7 +62,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
         },
       }}
     >
-      {userProfile?.displayName?.charAt(0).toUpperCase()}
+      {userProfile?.name?.charAt(0).toUpperCase()}
     </AnimateAvatar>
   );
 
@@ -72,7 +72,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
         open={open}
         onClick={handleOpenDrawer}
         photoURL={userProfile?.photoURL}
-        displayName={userProfile?.displayName}
+        displayName={userProfile?.name}
         sx={sx}
         {...other}
       />
@@ -96,10 +96,10 @@ export function AccountDrawer({ data = [], sx, ...other }) {
             {renderAvatar}
 
             <Typography variant="subtitle1" noWrap sx={{ mt: 2 }}>
-              {userProfile?.displayName}
+              {userProfile?.name}
             </Typography>
 
-            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }} noWrap>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5, mb:1 }} noWrap>
               {userProfile?.email}
             </Typography>
           </Stack>
@@ -120,7 +120,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
                 rootLabel = pathname.includes('/dashboard') ? 'Home' : 'Dashboard';
                 rootHref = pathname.includes('/dashboard') ? '/' : paths.dashboard.root;
               } else if (option.label === 'Profile') {
-                rootHref = paths.dashboard.user.profile(userProfile?.uid);
+                rootHref = paths.dashboard.user.profile(userId);
               } else if (option.label === 'Account settings') {
                 rootHref = paths.dashboard.user.account;
               }
