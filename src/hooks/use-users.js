@@ -1,7 +1,7 @@
 import { updateProfile } from 'firebase/auth';
 import { useState, useEffect, useCallback } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { doc, setDoc, updateDoc, onSnapshot, collection, getDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, onSnapshot, collection } from 'firebase/firestore';
 
 import { db, auth, storage } from 'src/utils/firebase';
 
