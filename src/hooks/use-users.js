@@ -1,7 +1,7 @@
 import { updateProfile } from 'firebase/auth';
 import { useState, useEffect, useCallback } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { doc, setDoc, updateDoc, onSnapshot, collection } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, onSnapshot, collection, getDoc } from 'firebase/firestore';
 
 import { db, auth, storage } from 'src/utils/firebase';
 
@@ -91,54 +91,67 @@ export function useUserById(_userId) {
 // User by Email
 
 export async function updateUsers({ currentUser, data }) {
-  // Déstructuration de l'objet data pour extraire avatarUrl et les autres données
+  // Destructure the data object to extract avatarUrl and other data
   const { avatarUrl: initialAvatarUrl, ...otherData } = data;
 
   let avatarUrl = initialAvatarUrl;
 
-  // S'assure d'avoir un ID utilisateur
-  const userId = currentUser?.id || doc(collection(db, 'users')).id;
+  // Ensure a user ID is available
+  const userId = currentUser?.uid || currentUser?.id;
+  // console.log('userId', userId);
 
-  // Vérifie si un nouveau fichier avatar a été fourni
+  // Référence à la collection 'users' dans Firestore
+  const usersRef = collection(db, 'users');
+
+  // Check if a new avatar file has been provided
   if (initialAvatarUrl instanceof File) {
-    // Crée un nom de fichier fixe pour l'avatar
-    const fileName = `avatars/${userId}/avatar.${initialAvatarUrl.name.split('.').pop()}`;
+    // Create a fixed filename for the avatar
+    const fileExtension = initialAvatarUrl.name.split('.').pop();
+    const fileName = `avatars/${userId}/avatar.${fileExtension}`;
 
-    // Référence au fichier dans le stockage Firebase
+    // Reference to the file in Firebase storage
     const storageRef = ref(storage, fileName);
 
-    // Télécharge le nouveau fichier avatar dans le stockage Firebase, remplaçant l'ancien s'il existe
-    await uploadBytes(storageRef, initialAvatarUrl);
+    try {
+      // Upload the new avatar file to Firebase storage, replacing the old one if it exists
+      await uploadBytes(storageRef, initialAvatarUrl);
 
-    // Récupère l'URL de téléchargement du nouveau fichier avatar
-    avatarUrl = await getDownloadURL(storageRef);
+      // Get the download URL of the new avatar file
+      avatarUrl = await getDownloadURL(storageRef);
 
-    // Mettre à jour avec auth photURL si l'utilisateur est connecté
-    if (auth.currentUser) {
-      await updateProfile(auth.currentUser, {
-        photoURL: avatarUrl,
-      });
+      // Update the auth photoURL if the user is authenticated
+      if (auth.currentUser) {
+        await updateProfile(auth.currentUser, {
+          photoURL: avatarUrl,
+        });
+      }
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      throw error;
     }
   }
 
-  // Crée un objet de données utilisateur avec l'URL de l'avatar mise à jour
+  // Create a user data object with the updated avatar URL
   const userData = {
     ...otherData,
     avatarUrl,
   };
 
-  // Référence à la collection 'users' dans Firestore
-  const usersRef = collection(db, 'users');
-  // Crée une référence de document pour un nouvel utilisateur ou un utilisateur existant
-  const userRef = currentUser?.id ? doc(usersRef, currentUser.id) : doc(usersRef);
+  try {
+    // Crée une référence de document pour un nouvel utilisateur ou un utilisateur existant
+    const userRef = userId ? doc(usersRef, userId) : doc(usersRef);
 
-  // Met à jour ou crée les données utilisateur dans Firestore
-  if (auth.currentUser) {
-    await updateDoc(userRef, userData);
-    toast.success('Mise à jour réussie !');
-  } else {
-    await setDoc(userRef, userData);
-    toast.success('Création réussie !');
+    // Met à jour ou crée les données utilisateur dans Firestore
+    if (userId) {
+      await updateDoc(userRef, userData);
+      toast.success('Mise à jour réussie !');
+    } else {
+      await setDoc(userRef, userData);
+      toast.success('Création réussie !');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour/création de l\'utilisateur:', error);
+    toast.error('Une erreur est survenue lors de l\'opération');
   }
 }
 

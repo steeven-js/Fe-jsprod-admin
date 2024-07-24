@@ -97,7 +97,7 @@ export const dashboardRoutes = [
           { path: 'list', element: <UserListPage /> },
           { path: 'new', element: <UserCreatePage /> },
           { path: ':id/edit', element: <UserEditPage /> },
-          { path: 'account', element: <UserAccountPage /> },
+          { path: 'account/:id', element: <UserAccountPage /> },
         ],
       },
       // {

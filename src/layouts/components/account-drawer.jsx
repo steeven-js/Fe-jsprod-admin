@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import { paths } from 'src/routes/paths';
 import { useRouter, usePathname } from 'src/routes/hooks';
 
-import { useAuth } from 'src/hooks/use-auth';
+import { auth } from 'src/utils/firebase';
 
 import { varAlpha } from 'src/theme/styles';
 
@@ -30,7 +30,8 @@ export function AccountDrawer({ data = [], sx, ...other }) {
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
-  const { userId, userProfile } = useAuth();
+
+  const authUser = auth.currentUser;
 
   const [open, setOpen] = useState(false);
 
@@ -54,7 +55,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
     <AnimateAvatar
       width={96}
       slotProps={{
-        avatar: { src: userProfile?.avatarUrl, alt: userProfile?.name },
+        avatar: { src: authUser?.photoURL, alt: authUser?.displayName },
         overlay: {
           border: 2,
           spacing: 3,
@@ -62,7 +63,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
         },
       }}
     >
-      {userProfile?.name?.charAt(0).toUpperCase()}
+      {authUser?.displayName?.charAt(0).toUpperCase()}
     </AnimateAvatar>
   );
 
@@ -71,8 +72,8 @@ export function AccountDrawer({ data = [], sx, ...other }) {
       <AccountButton
         open={open}
         onClick={handleOpenDrawer}
-        photoURL={userProfile?.avatarUrl}
-        displayName={userProfile?.name}
+        photoURL={authUser?.photoURL}
+        displayName={authUser?.displayName}
         sx={sx}
         {...other}
       />
@@ -96,11 +97,11 @@ export function AccountDrawer({ data = [], sx, ...other }) {
             {renderAvatar}
 
             <Typography variant="subtitle1" noWrap sx={{ mt: 2 }}>
-              {userProfile?.name}
+              {authUser?.displayName}
             </Typography>
 
             <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5, mb:1 }} noWrap>
-              {userProfile?.email}
+              {authUser?.email}
             </Typography>
           </Stack>
 
@@ -120,9 +121,9 @@ export function AccountDrawer({ data = [], sx, ...other }) {
                 rootLabel = pathname.includes('/dashboard') ? 'Home' : 'Dashboard';
                 rootHref = pathname.includes('/dashboard') ? '/' : paths.dashboard.root;
               } else if (option.label === 'Profile') {
-                rootHref = paths.dashboard.user.profile(userId);
+                rootHref = paths.dashboard.user.profile(authUser?.uid);
               } else if (option.label === 'Account settings') {
-                rootHref = paths.dashboard.user.account;
+                rootHref = paths.dashboard.user.account(authUser?.url);
               }
 
               return (
