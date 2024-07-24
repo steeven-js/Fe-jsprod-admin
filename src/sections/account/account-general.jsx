@@ -11,12 +11,16 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import { useUpdateUserProfile } from 'src/hooks/use-auth';
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
+
+import { updateUsers } from 'src/hooks/use-users';
 
 import { fData } from 'src/utils/format-number';
 
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaHelper } from 'src/components/hook-form';
+import { useState } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -42,8 +46,9 @@ export const UpdateUserSchema = zod.object({
   isPublic: zod.boolean(),
 });
 
-export function AccountGeneral({ user, userProfile }) {
-  const { updateUserProfile, error } = useUpdateUserProfile();
+export function AccountGeneral({ currentUser, userProfile }) {
+  const router = useRouter();
+  const [_isSubmitting, setIsSubmitting] = useState(false);
 
   const defaultValues = {
     name: userProfile?.name || '',
@@ -71,19 +76,16 @@ export function AccountGeneral({ user, userProfile }) {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
+    setIsSubmitting(true);
     try {
-      await updateUserProfile(data);
-      if (!error) {
-        toast.success('Update success!');
-      } else {
-        // eslint-disable-next-line prefer-template
-        toast.error('Update failed: ' + error);
-      }
-      console.info('DATA', data);
-    } catch (_error) {
-      console.error(_error);
-      // eslint-disable-next-line prefer-template
-      toast.error('Update failed: ' + _error.message);
+      await updateUsers({ currentUser, data });
+
+      router.push(paths.dashboard.user.list);
+    } catch (error) {
+      console.error(error);
+      toast.error('Une erreur est survenue lors de la mise à jour');
+    } finally {
+      setIsSubmitting(false);
     }
   });
 
