@@ -5,8 +5,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { useAuth } from 'src/hooks/use-auth';
 
-import { auth } from 'src/utils/firebase';
-
 import { CONFIG } from 'src/config-global';
 
 import { AccountView } from 'src/sections/account/view';
