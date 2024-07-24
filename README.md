@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4] - 2024-07-24
+
+### Added
+
+- page d'accueil
+
 ## [0.3] - 2024-07-23
 
 ### Added
