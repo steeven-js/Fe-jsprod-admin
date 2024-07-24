@@ -27,7 +27,7 @@ import { PostListHorizontal } from '../post-list-horizontal';
 
 // ----------------------------------------------------------------------
 
-export function PostListView() {
+export function PostListView({ currentUser }) {
   const [sortBy, setSortBy] = useState('latest');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -124,7 +124,7 @@ export function PostListView() {
         ))}
       </Tabs>
 
-      <PostListHorizontal posts={dataFiltered} loading={loading} />
+      <PostListHorizontal currentUser={currentUser} posts={dataFiltered} loading={loading} />
     </DashboardContent>
   );
 }
