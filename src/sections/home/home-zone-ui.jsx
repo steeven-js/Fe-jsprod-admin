@@ -45,10 +45,10 @@ export function HomeZoneUI({ sx, ...other }) {
 
   const renderDescription = (
     <SectionTitle
-      caption="Looking For a"
-      title="Landing page"
-      txtGradient="template?"
-      description="Fuse with dashboards to produce a superior product."
+      caption="Application sur les plantes médicinales"
+      title="Maîtrisez les plantes médicinales"
+      txtGradient="PlantMed"
+      description="Découvrez notre application sur les plantes médicinales. Vous pourrez y trouver des informations sur les plantes médicinales, leurs bienfaits et leurs utilisations."
       sx={{ textAlign: { xs: 'center', md: 'left' } }}
     />
   );
@@ -70,7 +70,7 @@ export function HomeZoneUI({ sx, ...other }) {
       <Box
         component="img"
         alt="Zone landing page"
-        src={`${CONFIG.site.basePath}/assets/images/home/zone-landing.webp`}
+        src={`${CONFIG.site.basePath}/assets/images/home/app-logo.webp`}
         sx={{
           width: 720,
           objectFit: 'cover',
