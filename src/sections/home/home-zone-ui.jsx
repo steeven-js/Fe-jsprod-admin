@@ -48,7 +48,7 @@ export function HomeZoneUI({ sx, ...other }) {
       caption="Application sur les plantes médicinales"
       title="Maîtrisez les plantes médicinales"
       txtGradient="PlantMed"
-      description="Découvrez notre application sur les plantes médicinales. Vous pourrez y trouver des informations sur les plantes médicinales, leurs bienfaits et leurs utilisations."
+      description="Découvrez mon application sur les plantes médicinales. Vous pourrez y trouver des informations sur les plantes médicinales, leurs bienfaits et leurs utilisations."
       sx={{ textAlign: { xs: 'center', md: 'left' } }}
     />
   );
