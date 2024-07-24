@@ -32,8 +32,6 @@ export function PostItemHorizontal({ post, currentUser }) {
 
   const router = useRouter();
 
-  console.log('currentUser', currentUser);
-
   const {
     title,
     publish,

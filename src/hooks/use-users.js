@@ -1,8 +1,9 @@
+import { updateProfile } from 'firebase/auth';
 import { useState, useEffect, useCallback } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, setDoc, updateDoc, onSnapshot, collection } from 'firebase/firestore';
 
-import { db, storage } from 'src/utils/firebase';
+import { db, auth, storage } from 'src/utils/firebase';
 
 import { toast } from 'src/components/snackbar';
 
@@ -95,28 +96,35 @@ export async function updateUsers({ currentUser, data }) {
 
   let avatarUrl = initialAvatarUrl;
 
+  // S'assure d'avoir un ID utilisateur
+  const userId = currentUser?.id || doc(collection(db, 'users')).id;
+
   // Vérifie si un nouveau fichier avatar a été fourni
-  if (data.avatarUrl && data.avatarUrl instanceof File) {
-      // S'assure d'avoir un ID utilisateur
-      const userId = currentUser?.id || doc(collection(db, 'users')).id;
+  if (initialAvatarUrl instanceof File) {
+    // Crée un nom de fichier fixe pour l'avatar
+    const fileName = `avatars/${userId}/avatar.${initialAvatarUrl.name.split('.').pop()}`;
 
-      // Crée un nom de fichier fixe pour l'avatar
-      const fileName = `avatars/${userId}/avatar.${data.avatarUrl.name.split('.').pop()}`;
+    // Référence au fichier dans le stockage Firebase
+    const storageRef = ref(storage, fileName);
 
-      // Référence au fichier dans le stockage Firebase
-      const storageRef = ref(storage, fileName);
+    // Télécharge le nouveau fichier avatar dans le stockage Firebase, remplaçant l'ancien s'il existe
+    await uploadBytes(storageRef, initialAvatarUrl);
 
-      // Télécharge le nouveau fichier avatar dans le stockage Firebase, remplaçant l'ancien s'il existe
-      await uploadBytes(storageRef, data.avatarUrl);
+    // Récupère l'URL de téléchargement du nouveau fichier avatar
+    avatarUrl = await getDownloadURL(storageRef);
 
-      // Récupère l'URL de téléchargement du nouveau fichier avatar
-      avatarUrl = await getDownloadURL(storageRef);
+    // Mettre à jour avec auth photURL si l'utilisateur est connecté
+    if (auth.currentUser) {
+      await updateProfile(auth.currentUser, {
+        photoURL: avatarUrl,
+      });
+    }
   }
 
   // Crée un objet de données utilisateur avec l'URL de l'avatar mise à jour
   const userData = {
-      ...otherData,
-      avatarUrl,
+    ...otherData,
+    avatarUrl,
   };
 
   // Référence à la collection 'users' dans Firestore
@@ -125,12 +133,12 @@ export async function updateUsers({ currentUser, data }) {
   const userRef = currentUser?.id ? doc(usersRef, currentUser.id) : doc(usersRef);
 
   // Met à jour ou crée les données utilisateur dans Firestore
-  if (currentUser?.id) {
-      await updateDoc(userRef, userData);
-      toast.success('Mise à jour réussie !');
+  if (auth.currentUser) {
+    await updateDoc(userRef, userData);
+    toast.success('Mise à jour réussie !');
   } else {
-      await setDoc(userRef, userData);
-      toast.success('Création réussie !');
+    await setDoc(userRef, userData);
+    toast.success('Création réussie !');
   }
 }
 
