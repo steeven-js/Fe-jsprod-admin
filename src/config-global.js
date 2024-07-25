@@ -10,6 +10,7 @@ export const CONFIG = {
     serverUrl: import.meta.env.VITE_SERVER_URL ?? '',
     assetURL: import.meta.env.VITE_ASSET_URL ?? '',
     basePath: import.meta.env.VITE_BASE_PATH ?? '',
+    maintenance: import.meta.env.VITE_MAINTENANCE ?? false,
     version: packageJson.version,
   },
   /**
@@ -62,9 +63,15 @@ export const CONFIG = {
     url: import.meta.env.VITE_SUPABASE_URL ?? '',
     key: import.meta.env.VITE_SUPABASE_ANON_KEY ?? '',
   },
+    /**
+   * Filestack
+   */
   cv: {
     url: import.meta.env.VITE_CV_PDF_URL ?? '',
   },
+    /**
+   * Applications
+   */
   app: {
     ios: import.meta.env.VITE_APP_IOS_URL ?? '',
     android: import.meta.env.VITE_APP_ANDROID_URL ?? '',
