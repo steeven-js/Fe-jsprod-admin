@@ -25,7 +25,7 @@ import { usePopover, CustomPopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export function PostItemHorizontal({ post }) {
+export function PostItemHorizontal({ post, currentUser }) {
   const theme = useTheme();
 
   const popover = usePopover();
@@ -115,8 +115,8 @@ export function PostItemHorizontal({ post }) {
           }}
         >
           <Avatar
-            alt={post.author?.[0]?.name || 'Author'}
-            src={post.author?.[0]?.avatarUrl}
+            alt={currentUser?.displayName || 'Author'}
+            src={currentUser?.photoURL}
             sx={{ top: 16, right: 16, zIndex: 9, position: 'absolute' }}
           />
           <Image alt={title} src={coverUrl} sx={{ height: 1, borderRadius: 1.5 }} />

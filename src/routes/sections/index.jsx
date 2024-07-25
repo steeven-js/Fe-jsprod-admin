@@ -1,7 +1,8 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 
 import { MainLayout } from 'src/layouts/main';
+import { SimpleLayout } from 'src/layouts/simple';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
@@ -14,20 +15,30 @@ import { componentsRoutes } from './components';
 // ----------------------------------------------------------------------
 
 const HomePage = lazy(() => import('src/pages/home'));
+const MaintenancePage = lazy(() => import('src/pages/maintenance'));
 
 export function Router() {
+  const isMaintenance = import.meta.env.VITE_MAINTENANCE === 'true';
+
+  useEffect(() => {
+    console.log('isMaintenance', isMaintenance);
+    // Ajoutez ici des effets supplémentaires si nécessaire
+  }, [isMaintenance]);
+
   return useRoutes([
     {
       path: '/',
-      /**
-       * Skip home page
-       * element: <Navigate to={CONFIG.auth.redirectPath} replace />,
-       */
       element: (
         <Suspense fallback={<SplashScreen />}>
-          <MainLayout>
-            <HomePage />
-          </MainLayout>
+          {isMaintenance ? (
+            <SimpleLayout content={{ compact: true }}>
+              <MaintenancePage />
+            </SimpleLayout>
+          ) : (
+            <MainLayout>
+              <HomePage />
+            </MainLayout>
+          )}
         </Suspense>
       ),
     },

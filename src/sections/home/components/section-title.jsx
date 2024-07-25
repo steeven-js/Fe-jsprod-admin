@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
-import { varAlpha, textGradient } from 'src/theme/styles';
+import { textGradient } from 'src/theme/styles';
 
 import { varFade } from 'src/components/animate';
 
@@ -32,13 +32,20 @@ export function SectionTitle({ title, caption, slotProps, txtGradient, descripti
       >
         {`${title} `}
         <Box
-          component="span"
+          component={m.span}
+          animate={{ backgroundPosition: '200% center' }}
+          transition={{
+            duration: 20,
+            ease: 'linear',
+            repeat: Infinity,
+            repeatType: 'reverse',
+          }}
           sx={{
-            opacity: 0.4,
-            display: 'inline-block',
             ...textGradient(
-              `to right, ${theme.vars.palette.text.primary}, ${varAlpha(theme.vars.palette.text.primaryChannel, 0.2)}`
+              `300deg, ${theme.vars.palette.primary.main} 0%, ${theme.vars.palette.warning.main} 25%, ${theme.vars.palette.primary.main} 50%, ${theme.vars.palette.warning.main} 75%, ${theme.vars.palette.primary.main} 100%`
             ),
+            backgroundSize: '400%',
+            ml: { xs: 0.75, md: 1, xl: 1.5 },
           }}
         >
           {txtGradient}
@@ -54,6 +61,7 @@ export function SectionTitle({ title, caption, slotProps, txtGradient, descripti
           {description}
         </Typography>
       )}
+
     </Stack>
   );
 }

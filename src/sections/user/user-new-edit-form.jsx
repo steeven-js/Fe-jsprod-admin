@@ -1,10 +1,8 @@
 import { z as zod } from 'zod';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
-import { doc, setDoc, collection } from 'firebase/firestore';
 import { isValidPhoneNumber } from 'react-phone-number-input/input';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -19,12 +17,23 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
+import { updateUsers } from 'src/hooks/use-users';
+
 import { fData } from 'src/utils/format-number';
-import { db, storage } from 'src/utils/firebase';
 
 import { Label } from 'src/components/label';
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaHelper } from 'src/components/hook-form';
+
+// ----------------------------------------------------------------------
+
+const ROLE_OPTIONS = [
+  'User',
+  'Admin',
+  'Editor',
+  'Manager',
+  'Developer',
+];
 
 // ----------------------------------------------------------------------
 
@@ -45,7 +54,9 @@ export const NewUserSchema = zod.object({
   company: zod.string().min(1, { message: 'Company is required!' }),
   state: zod.string().min(1, { message: 'State is required!' }),
   city: zod.string().min(1, { message: 'City is required!' }),
-  role: zod.string().min(1, { message: 'Role is required!' }),
+  role: schemaHelper.objectOrNull({
+    message: { required_error: 'Role is required!' },
+  }),
   zipCode: zod.string().min(1, { message: 'Zip code is required!' }),
   // Not required
   status: zod.string(),
@@ -56,6 +67,7 @@ export const NewUserSchema = zod.object({
 
 export function UserNewEditForm({ currentUser }) {
   const router = useRouter();
+  const [_isSubmitting, setIsSubmitting] = useState(false);
 
   // Initialisation du formulaire avec des valeurs par défaut
   const defaultValues = useMemo(
@@ -72,7 +84,7 @@ export function UserNewEditForm({ currentUser }) {
       address: currentUser?.address || '',
       zipCode: currentUser?.zipCode || '',
       company: currentUser?.company || '',
-      role: currentUser?.role || '',
+      role: currentUser?.role || ROLE_OPTIONS[0],
     }),
     [currentUser]
   );
@@ -99,57 +111,17 @@ export function UserNewEditForm({ currentUser }) {
   const values = watch();
 
   const onSubmit = handleSubmit(async (data) => {
+    setIsSubmitting(true);
     try {
-      // Simule un délai pour montrer l'état de chargement
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await updateUsers({ currentUser, data });
 
-      // Déstructuration de l'objet data pour extraire avatarUrl et les autres données
-      const { avatarUrl: initialAvatarUrl, ...otherData } = data;
-
-      let avatarUrl = initialAvatarUrl;
-
-      // Vérifiez si un nouveau fichier avatar a été fourni
-      if (data.avatarUrl && data.avatarUrl instanceof File) {
-        // Génère un ID utilisateur si aucun ID actuel n'est présent
-        const userId = currentUser?.id || doc(collection(db, 'users')).id;
-        // Crée un chemin de fichier unique pour le stockage de l'avatar
-        const fileName = `avatars/${userId}/${Date.now()}_${data.avatarUrl.name}`;
-        // Référence au fichier dans le stockage Firebase
-        const storageRef = ref(storage, fileName);
-
-        // Télécharge le fichier avatar dans le stockage Firebase
-        await uploadBytes(storageRef, data.avatarUrl);
-        // Récupère l'URL de téléchargement du fichier avatar
-        avatarUrl = await getDownloadURL(storageRef);
-      }
-
-      // Crée un objet de données utilisateur avec l'URL de l'avatar mise à jour
-      const userData = {
-        ...otherData,
-        avatarUrl,
-      };
-
-      // Référence à la collection 'users' dans Firestore
-      const usersRef = collection(db, 'users');
-      // Crée une référence de document pour un nouvel utilisateur ou un utilisateur existant
-      const newUserRef = currentUser?.id ? doc(usersRef, currentUser.id) : doc(usersRef);
-
-      // Enregistre les données utilisateur dans Firestore
-      await setDoc(newUserRef, userData);
-
-      // Réinitialise le formulaire après la soumission
       reset();
-      // Affiche un message de succès
-      toast.success(currentUser ? 'Update success!' : 'Create success!');
-      // Redirige l'utilisateur vers la liste des utilisateurs du tableau de bord
       router.push(paths.dashboard.user.list);
-      // Affiche les données utilisateur dans la console pour le débogage
-      console.info('DATA', userData);
     } catch (error) {
-      // Affiche une erreur dans la console en cas de problème
       console.error(error);
-      // Affiche un message d'erreur
-      toast.error('An error occurred');
+      toast.error('Une erreur est survenue lors de la mise à jour');
+    } finally {
+      setIsSubmitting(false);
     }
   });
 
@@ -283,7 +255,18 @@ export function UserNewEditForm({ currentUser }) {
               <Field.Text name="address" label="Address" />
               <Field.Text name="zipCode" label="Zip/code" />
               <Field.Text name="company" label="Company" />
-              <Field.Text name="role" label="Role" />
+
+              <Field.Autocomplete
+                name="role"
+                autoHighlight
+                options={ROLE_OPTIONS.map((option) => option)}
+                getOptionLabel={(option) => option}
+                renderOption={(props, option) => (
+                  <li {...props} key={option}>
+                    {option}
+                  </li>
+                )}
+              />
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>

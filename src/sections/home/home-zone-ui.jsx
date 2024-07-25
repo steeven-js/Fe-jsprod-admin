@@ -2,17 +2,14 @@ import { m } from 'framer-motion';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
-
-import { paths } from 'src/routes/paths';
 
 import { CONFIG } from 'src/config-global';
 import { varAlpha, stylesMode } from 'src/theme/styles';
 
-import { Iconify } from 'src/components/iconify';
 import { varFade, MotionViewport } from 'src/components/animate';
+import AppStoreButtons from 'src/components/app-store-buttons/appStoreButtons ';
 
 import { SectionTitle } from './components/section-title';
 import { FloatLine, CircleSvg, FloatTriangleDownIcon } from './components/svg-elements';
@@ -48,10 +45,10 @@ export function HomeZoneUI({ sx, ...other }) {
 
   const renderDescription = (
     <SectionTitle
-      caption="Looking For a"
-      title="Landing page"
-      txtGradient="template?"
-      description="Fuse with dashboards to produce a superior product."
+      caption="Application sur les plantes médicinales"
+      title="Maîtrisez les plantes médicinales"
+      txtGradient="PlantMed"
+      description="Découvrez mon application sur les plantes médicinales. Vous pourrez y trouver des informations sur les plantes médicinales, leurs bienfaits et leurs utilisations."
       sx={{ textAlign: { xs: 'center', md: 'left' } }}
     />
   );
@@ -73,7 +70,7 @@ export function HomeZoneUI({ sx, ...other }) {
       <Box
         component="img"
         alt="Zone landing page"
-        src={`${CONFIG.site.basePath}/assets/images/home/zone-landing.webp`}
+        src={`${CONFIG.site.basePath}/assets/images/home/app-logo.webp`}
         sx={{
           width: 720,
           objectFit: 'cover',
@@ -84,20 +81,7 @@ export function HomeZoneUI({ sx, ...other }) {
       />
 
       <Box sx={{ p: 0.5, borderRadius: '0 0 8px 8px', bgcolor: 'common.white' }}>
-        <Button
-          variant="contained"
-          target="_blank"
-          rel="noopener"
-          href={paths.zoneStore}
-          endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
-          sx={{
-            color: 'grey.800',
-            bgcolor: 'common.white',
-            '&:hover': { bgcolor: 'common.white' },
-          }}
-        >
-          Visit Zone UI
-        </Button>
+        <AppStoreButtons />
       </Box>
     </Stack>
   );
