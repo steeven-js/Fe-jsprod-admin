@@ -100,7 +100,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
               {authUser?.displayName}
             </Typography>
 
-            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5, mb:1 }} noWrap>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5, mb: 1 }} noWrap>
               {authUser?.email}
             </Typography>
           </Stack>
@@ -123,7 +123,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
               } else if (option.label === 'Profile') {
                 rootHref = paths.dashboard.user.profile(authUser?.uid);
               } else if (option.label === 'Account settings') {
-                rootHref = paths.dashboard.user.account(authUser?.url);
+                rootHref = paths.dashboard.user.account(authUser?.uid);
               }
 
               return (

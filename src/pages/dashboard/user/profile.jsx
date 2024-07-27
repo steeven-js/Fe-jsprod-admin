@@ -18,7 +18,9 @@ const metadata = { title: `User profile | Dashboard - ${CONFIG.site.name}` };
 export default function Page() {
   const { id = '' } = useParams();
 
-  const {user, loading} = useUserById(id);
+  console.log('id', id);
+
+  const { user, loading } = useUserById(id);
 
   return (
     <>
@@ -33,7 +35,6 @@ export default function Page() {
       ) : (
         <UserProfileView userId={user.id} userProfile={user} />
       )}
-
     </>
   );
 }
