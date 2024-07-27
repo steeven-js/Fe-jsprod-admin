@@ -37,28 +37,28 @@ export function CustomPricingCard({ card, sx, ...other }) {
       <Typography variant="h4" sx={{ textTransform: 'capitalize' }}>
         {subscription}
       </Typography>
-      {/* <Typography variant="subtitle2">{caption}</Typography> */}
+      <Typography variant="subtitle2">{caption}</Typography>
     </Stack>
   );
 
   const renderPrice = (
     <Stack direction="row">
-    <Typography variant="h2">{price}</Typography>
+      <Typography variant="h2">{price}</Typography>
 
-    <Typography variant="h4">€</Typography>
+      <Typography variant="h4">€</Typography>
 
-    <Typography
-      component="span"
-      sx={{
-        alignSelf: 'center',
-        color: 'text.disabled',
-        ml: 1,
-        typography: 'body2',
-      }}
-    >
-      / mois
-    </Typography>
-  </Stack>
+      <Typography
+        component="span"
+        sx={{
+          alignSelf: 'center',
+          color: 'text.disabled',
+          ml: 1,
+          typography: 'body2',
+        }}
+      >
+        / mois
+      </Typography>
+    </Stack>
   );
 
   const renderList = (

@@ -9,11 +9,12 @@ import { CustomPricingCard } from 'src/sections/pricing/custom-pricing-card';
 const _pricingPlans = [
   {
     subscription: 'basic',
-    price: 29.99,
-    caption: 'Forever',
+    price: 299.99,
+    caption:
+      "Parfait pour les petites entreprises ou les startups, ce forfait comprend la création d'un chatbot simple avec des fonctionnalités de base pour répondre aux questions fréquemment posées.",
     lists: [
       'Chatbot IA simple',
-      'Jusqu\'à 1000 interactions par mois',
+      "Jusqu'à 1000 interactions par mois",
       'Intégration sur site web et Facebook Messenger',
       'Réponses préprogrammées et apprentissage limité',
       'Support par email',
@@ -22,13 +23,14 @@ const _pricingPlans = [
   },
   {
     subscription: 'pro',
-    price: 99.99,
-    caption: 'Saving $24 a year',
+    price: 599.99,
+    caption:
+      'Idéal pour les entreprises de taille moyenne, ce forfait offre un chatbot plus avancé avec des capacités de personnalisation et une intégration à vos systèmes existants.',
     lists: [
       'Chatbot IA avancé avec apprentissage automatique',
-      'Jusqu\'à 10 000 interactions par mois',
+      "Jusqu'à 10 000 interactions par mois",
       'Intégration multi-plateforme (site web, réseaux sociaux, applications mobiles)',
-      'Personnalisation de l\'avatar et de la voix',
+      "Personnalisation de l'avatar et de la voix",
       'Analyses et rapports détaillés',
       'Support prioritaire par chat et email',
     ],
@@ -36,8 +38,9 @@ const _pricingPlans = [
   },
   {
     subscription: 'entreprise',
-    price: 499.99,
-    caption: 'Saving $124 a year',
+    price: 999.99,
+    caption:
+      'Conçu pour les grandes entreprises, ce forfait propose un chatbot entièrement personnalisé avec des fonctionnalités avancées, une intégration complète et un support dédié.',
     lists: [
       'Chatbot IA haute performance avec traitement du langage naturel avancé',
       'Interactions illimitées',
@@ -57,12 +60,15 @@ export function HomePricing({ sx }) {
   return (
     <Container sx={{ pt: 5, pb: 10 }}>
       <Typography variant="h3" align="center" sx={{ mb: 2 }}>
-        Flexible plans for your
-        <br /> {`community's size and needs`}
+        Plans Flexibles pour
+        <br /> Vos Besoins et Votre Budget
       </Typography>
 
       <Typography align="center" sx={{ color: 'text.secondary' }}>
-        Choose your plan and make modern online conversation magic
+        Découvrez nos offres de création de chatbots adaptées à tous les besoins et budgets. Que
+        vous soyez une petite entreprise cherchant à automatiser vos réponses client ou une grande
+        société souhaitant un chatbot personnalisé et sophistiqué, nous avons la solution idéale
+        pour vous.{' '}
       </Typography>
 
       <Box
