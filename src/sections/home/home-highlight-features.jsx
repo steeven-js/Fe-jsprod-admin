@@ -49,7 +49,11 @@ export function HomeHighlightFeatures({ sx, ...other }) {
             alignItems={{ xs: 'center', md: 'flex-start' }}
             sx={{ textAlign: { xs: 'center', md: 'left' } }}
           >
-            <SectionTitle caption="App Features" title="Highlight" txtGradient="features" />
+            <SectionTitle
+              caption="Signé par Jacques Steeven"
+              title="Mes"
+              txtGradient="projets, créations et réalisations"
+            />
 
             <SvgIcon
               component={m.svg}
@@ -174,7 +178,7 @@ function ScrollContent({ containerRoot }) {
 function Item({ item, sx, ...other }) {
   return (
     <Box sx={{ flexShrink: 0, ...sx }} {...other}>
-      <Stack direction="row" spacing={2} sx={{ mb: 6 }}>
+      <Stack direction="row" spacing={2} sx={{ mb: 6, marginTop: '200px' }}>
         <Iconify width={28} icon={item.icon} sx={{ mt: '10px' }} />
         <Stack spacing={2}>
           <Typography variant="h3">{item.title}</Typography>
@@ -223,27 +227,68 @@ function Item({ item, sx, ...other }) {
 
 const ITEMS = [
   {
-    title: 'Dark mode',
-    subtitle: 'A dark theme that feels easier on the eyes.',
+    title: 'Plantmed',
+    subtitle: 'Ma première application mobile.',
     icon: 'solar:cloudy-moon-bold-duotone',
-    imgUrl: [`${CONFIG.site.basePath}/assets/images/home/highlight-darkmode.webp`],
+    imgUrl: [`${CONFIG.site.basePath}/assets/images/home/plantmed.png`],
   },
   {
-    title: 'Color presets',
-    subtitle: 'Express your own style with just one click.',
+    title: 'Blog et Portfolio',
+    subtitle: 'Mon blog et mon portfolio réaliser avec react et firebase.',
     icon: 'solar:pallete-2-bold-duotone',
-    imgUrl: [
-      `${CONFIG.site.basePath}/assets/images/home/highlight-presets-1.webp`,
-      `${CONFIG.site.basePath}/assets/images/home/highlight-presets-2.webp`,
-      `${CONFIG.site.basePath}/assets/images/home/highlight-presets-3.webp`,
-      `${CONFIG.site.basePath}/assets/images/home/highlight-presets-4.webp`,
-      `${CONFIG.site.basePath}/assets/images/home/highlight-presets-5.webp`,
-    ],
+    imgUrl: [`${CONFIG.site.basePath}/assets/images/home/highlight-presets-1.webp`],
   },
   {
-    title: 'Right-to-left',
-    subtitle: 'Support languages such as Arabic, Persian, and Hebrew.',
-    icon: 'solar:align-right-bold-duotone',
-    imgUrl: [`${CONFIG.site.basePath}/assets/images/home/highlight-rtl.webp`],
+    title: 'Interface administateur',
+    subtitle: 'Une interface administrateur pour gérer les articles et les projets.',
+    icon: 'solar:pallete-2-bold-duotone',
+    imgUrl: [`${CONFIG.site.basePath}/assets/images/home/highlight-presets-2.webp`],
+  },
+  {
+    title: 'Projet ecommerce',
+    subtitle: 'Un projet ecommerce réaliser avec react firebase et laravel.',
+    icon: 'solar:pallete-2-bold-duotone',
+    imgUrl: [`${CONFIG.site.basePath}/assets/images/home/highlight-presets-3.webp`],
+  },
+  {
+    title: 'Projet réservation',
+    subtitle: 'Un projet réservation réaliser avec react firebase et laravel.',
+    icon: 'solar:pallete-2-bold-duotone',
+    imgUrl: [`${CONFIG.site.basePath}/assets/images/home/highlight-presets-4.webp`],
+  },
+  {
+    title: 'Projet chatbot',
+    subtitle: "Un projet chatbot pour l'application mobile plantmed.",
+    icon: 'solar:pallete-2-bold-duotone',
+    imgUrl: [`${CONFIG.site.basePath}/assets/images/home/highlight-presets-5.webp`],
   },
 ];
+
+// ----------------------------------------------------------------------
+
+// const ITEMS = [
+//   {
+//     title: 'Dark mode',
+//     subtitle: 'A dark theme that feels easier on the eyes.',
+//     icon: 'solar:cloudy-moon-bold-duotone',
+//     imgUrl: [`${CONFIG.site.basePath}/assets/images/home/highlight-darkmode.webp`],
+//   },
+//   {
+//     title: 'Color presets',
+//     subtitle: 'Express your own style with just one click.',
+//     icon: 'solar:pallete-2-bold-duotone',
+//     imgUrl: [
+//       `${CONFIG.site.basePath}/assets/images/home/highlight-presets-1.webp`,
+//       `${CONFIG.site.basePath}/assets/images/home/highlight-presets-2.webp`,
+//       `${CONFIG.site.basePath}/assets/images/home/highlight-presets-3.webp`,
+//       `${CONFIG.site.basePath}/assets/images/home/highlight-presets-4.webp`,
+//       `${CONFIG.site.basePath}/assets/images/home/highlight-presets-5.webp`,
+//     ],
+//   },
+//   {
+//     title: 'Right-to-left',
+//     subtitle: 'Support languages such as Arabic, Persian, and Hebrew.',
+//     icon: 'solar:align-right-bold-duotone',
+//     imgUrl: [`${CONFIG.site.basePath}/assets/images/home/highlight-rtl.webp`],
+//   },
+// ];
