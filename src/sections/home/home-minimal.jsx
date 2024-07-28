@@ -145,7 +145,7 @@ const ITEMS = [
   },
   {
     icon: `${CONFIG.site.basePath}/assets/icons/home/ic-development.svg`,
-    title: 'Development',
+    title: 'Developement web et mobile',
     description: 'Je développe des applications web et mobiles performantes.',
   },
 ];
