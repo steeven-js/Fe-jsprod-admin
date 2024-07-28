@@ -61,7 +61,7 @@ export function HeaderBase({
     account = true,
     helpLink = false,
     settings = true,
-    purchase = true,
+    purchase = false,
     contacts = false,
     searchbar = true,
     workspaces = false,
