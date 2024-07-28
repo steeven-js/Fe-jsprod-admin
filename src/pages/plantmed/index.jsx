@@ -1,12 +1,12 @@
 import { Helmet } from 'react-helmet-async';
 
-import { HomeView } from 'src/sections/home/view';
+import { HomeView } from 'src/sections/plantmed/home';
 
 // ----------------------------------------------------------------------
 
 const metadata = {
-  title: 'Jacques Steeven',
-  description: "Concepteur développeur d'application",
+  title: 'Plantmed',
+  description: 'Application sur les plantes médicinales',
 };
 
 export default function Page() {

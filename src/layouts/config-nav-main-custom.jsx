@@ -56,11 +56,13 @@ export const navData = [
         ],
       },
       {
-        subheader: 'Error',
+        subheader: 'Plantmed',
         items: [
-          { title: 'Page 403', path: paths.page403 },
-          { title: 'Page 404', path: paths.page404 },
-          { title: 'Page 500', path: paths.page500 },
+          { title: 'Home', path: paths.plantmed.root },
+          { title: 'plants', path: paths.plantmed.plants },
+          { title: 'symptoms', path: paths.plantmed.symptoms },
+          { title: 'cgu', path: paths.plantmed.cgu },
+          { title: 'privacy-policy', path: paths.plantmed.privacy_policy },
         ],
       },
       { subheader: 'Dashboard', items: [{ title: 'Dashboard', path: CONFIG.auth.redirectPath }] },

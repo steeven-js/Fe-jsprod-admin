@@ -1,10 +1,10 @@
 # Changelog
 
-## [0.5] - 2024-07-27
+## [0.5] - 2024-07-28
 
 ### Added
 
-- maj projets
+- pages plantmed
 -
 ## [0.4] - 2024-07-24
 

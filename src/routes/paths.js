@@ -181,4 +181,14 @@ export const paths = {
       },
     },
   },
+  // PLANTMED
+  plantmed: {
+    root: '/plantmed',
+    plants: '/plantmed/plants',
+    symptoms: '/plantmed/symptoms',
+    plant: (id) => `/plant/${id}`,
+    symptom: (id) => `/symptom/${id}`,
+    cgu: '/plantmed/cgu',
+    privacy_policy: '/plantmed/privacy-policy',
+  }
 };

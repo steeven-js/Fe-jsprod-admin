@@ -1,12 +1,12 @@
 import { Helmet } from 'react-helmet-async';
 
-import { HomeView } from 'src/sections/home/view';
+import { CguView } from 'src/sections/plantmed/cgu';
 
 // ----------------------------------------------------------------------
 
 const metadata = {
   title: 'Jacques Steeven',
-  description: "Concepteur développeur d'application",
+  description: "Cgu de l'application PlantMed",
 };
 
 export default function Page() {
@@ -17,7 +17,7 @@ export default function Page() {
         <meta name="description" content={metadata.description} />
       </Helmet>
 
-      <HomeView />
+      <CguView />
     </>
   );
 }
