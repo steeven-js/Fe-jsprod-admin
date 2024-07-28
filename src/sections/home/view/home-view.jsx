@@ -9,7 +9,7 @@ import { HomeZoneUI } from '../home-zone-ui';
 import { HomeMinimal } from '../home-minimal';
 import { HomePricing } from '../home-pricing';
 import { HomeIntegrations } from '../home-integrations';
-import { HomeAdvertisement } from '../home-advertisement';
+// import { HomeAdvertisement } from '../home-advertisement';
 import { HomeHighlightFeatures } from '../home-highlight-features';
 
 // ----------------------------------------------------------------------
@@ -42,7 +42,7 @@ export function HomeView() {
 
         <HomeFAQs />
 
-        <HomeAdvertisement />
+        {/* <HomeAdvertisement /> */}
       </Stack>
     </>
   );
