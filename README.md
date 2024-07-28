@@ -5,6 +5,7 @@
 ### Added
 
 - pages plantmed
+- maj projets
 -
 ## [0.4] - 2024-07-24
 
