@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import Drawer, { drawerClasses } from '@mui/material/Drawer';
 import { useTheme, useColorScheme } from '@mui/material/styles';
 
+import { useAuth } from 'src/hooks/use-auth';
+
 import COLORS from 'src/theme/core/colors.json';
 import { paper, varAlpha } from 'src/theme/styles';
 import { defaultFont } from 'src/theme/core/typography';
@@ -40,6 +42,8 @@ export function SettingsDrawer({
   const settings = useSettingsContext();
 
   const { mode, setMode } = useColorScheme();
+
+  const { user } = useAuth();
 
   const renderHead = (
     <Box display="flex" alignItems="center" sx={{ py: 2, pr: 1, pl: 2.5 }}>
@@ -176,17 +180,27 @@ export function SettingsDrawer({
       {renderHead}
 
       <Scrollbar>
-        <Stack spacing={6} sx={{ px: 2.5, pb: 5 }}>
-          <Box gap={2} display="grid" gridTemplateColumns="repeat(2, 1fr)">
-            {!hideColorScheme && renderMode}
-            {!hideContrast && renderContrast}
-            {!hideDirection && renderRTL}
-            {!hideCompact && renderCompact}
-          </Box>
-          {!(hideNavLayout && hideNavColor) && renderNav}
-          {!hidePresets && renderPresets}
-          {!hideFont && renderFont}
-        </Stack>
+        {user ? (
+          <Stack spacing={6} sx={{ px: 2.5, pb: 5 }}>
+            <Box gap={2} display="grid" gridTemplateColumns="repeat(2, 1fr)">
+              {!hideColorScheme && renderMode}
+              {!hideContrast && renderContrast}
+              {!hideDirection && renderRTL}
+              {!hideCompact && renderCompact}
+            </Box>
+            {!(hideNavLayout && hideNavColor) && renderNav}
+            {!hidePresets && renderPresets}
+            {!hideFont && renderFont}
+          </Stack>
+        ) : (
+          <Stack spacing={6} sx={{ px: 2.5, pb: 5 }}>
+            <Box gap={2} display="grid" gridTemplateColumns="repeat(2, 1fr)">
+              {!hideColorScheme && renderMode}
+            </Box>
+            {!hidePresets && renderPresets}
+            {!hideFont && renderFont}
+          </Stack>
+        )}
       </Scrollbar>
     </Drawer>
   );

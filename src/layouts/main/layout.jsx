@@ -61,7 +61,7 @@ export function MainLayout({ sx, data, children }) {
               ),
               rightAreaStart: (
                 <NavDesktop
-                  data={user ? customMainNavData : navData}
+                  data={user ? navData : customMainNavData}
                   sx={{
                     display: 'none',
                     [theme.breakpoints.up(layoutQuery)]: {
