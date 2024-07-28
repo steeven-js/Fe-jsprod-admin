@@ -1,14 +1,13 @@
-// src/hooks/use-posts.js
 import { useState, useEffect } from 'react';
 import {
   where,
   endAt,
   query,
   limit,
-  getDocs,
   orderBy,
   startAt,
   collection,
+  onSnapshot,
 } from 'firebase/firestore';
 
 import { db } from 'src/utils/firebase';
@@ -18,44 +17,42 @@ export function usePosts(sortBy = 'latest', searchQuery = '', publish = 'all') {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchPosts() {
-      setLoading(true);
-      try {
-        let q;
-        if (searchQuery) {
-          q = query(
-            collection(db, 'posts'),
-            orderBy('title'),
-            startAt(searchQuery),
-            endAt(`${searchQuery}\uf8ff`),
-            limit(10)
-          );
-        } else {
-          const orderByField = sortBy === 'popular' ? 'totalViews' : 'createdAt';
-          const orderDirection = sortBy === 'oldest' ? 'asc' : 'desc';
-          const constraints = [orderBy(orderByField, orderDirection), limit(20)];
+    let unsubscribe = () => {};
 
-          if (publish !== 'all') {
-            constraints.push(where('publish', '==', publish));
-          }
+    const q = searchQuery
+      ? query(
+          collection(db, 'posts'),
+          orderBy('title'),
+          startAt(searchQuery),
+          endAt(`${searchQuery}\uf8ff`),
+          limit(10)
+        )
+      : query(
+          collection(db, 'posts'),
+          ...[
+            orderBy(sortBy === 'popular' ? 'totalViews' : 'createdAt', sortBy === 'oldest' ? 'asc' : 'desc'),
+            limit(20),
+            ...(publish !== 'all' ? [where('publish', '==', publish)] : []),
+          ]
+        );
 
-          q = query(collection(db, 'posts'), ...constraints);
-        }
-
-        const querySnapshot = await getDocs(q);
+    unsubscribe = onSnapshot(
+      q,
+      (querySnapshot) => {
         const fetchedPosts = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
         setPosts(fetchedPosts);
-      } catch (error) {
+        setLoading(false);
+      },
+      (error) => {
         console.error('Error fetching posts:', error);
-      } finally {
         setLoading(false);
       }
-    }
+    );
 
-    fetchPosts();
+    return () => unsubscribe();
   }, [sortBy, searchQuery, publish]);
 
   return { posts, loading };
@@ -66,24 +63,25 @@ export function useLatestPosts(count = 4) {
   const [latestPostsLoading, setLatestPostsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchLatestPosts() {
-      setLatestPostsLoading(true);
-      try {
-        const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(count));
-        const querySnapshot = await getDocs(q);
+    const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(count));
+
+    const unsubscribe = onSnapshot(
+      q,
+      (querySnapshot) => {
         const fetchedPosts = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
         setLatestPosts(fetchedPosts);
-      } catch (error) {
+        setLatestPostsLoading(false);
+      },
+      (error) => {
         console.error('Error fetching latest posts:', error);
-      } finally {
         setLatestPostsLoading(false);
       }
-    }
+    );
 
-    fetchLatestPosts();
+    return () => unsubscribe();
   }, [count]);
 
   return { latestPosts, latestPostsLoading };
@@ -95,35 +93,35 @@ export function useFetchPostBySlug(slug) {
   const [postError, setPostError] = useState(null);
 
   useEffect(() => {
-    async function fetchPost() {
-      if (!slug) {
-        setPostBySlugLoading(false);
-        return;
-      }
+    let unsubscribe = () => {};
 
-      setPostBySlugLoading(true);
-      setPostError(null);
+    if (slug) {
+      const q = query(collection(db, 'posts'), where('slug', '==', slug));
 
-      try {
-        const postsRef = collection(db, 'posts');
-        const q = query(postsRef, where('slug', '==', slug));
-        const querySnapshot = await getDocs(q);
-
-        if (querySnapshot.empty) {
-          throw new Error('Post not found');
+      unsubscribe = onSnapshot(
+        q,
+        (querySnapshot) => {
+          if (querySnapshot.empty) {
+            setPostError('Post not found');
+            setPostBySlug(null);
+          } else {
+            const postDoc = querySnapshot.docs[0];
+            setPostBySlug({ id: postDoc.id, ...postDoc.data() });
+            setPostError(null);
+          }
+          setPostBySlugLoading(false);
+        },
+        (error) => {
+          console.error('Error fetching post:', error);
+          setPostError(error.message);
+          setPostBySlugLoading(false);
         }
-
-        const postDoc = querySnapshot.docs[0];
-        setPostBySlug({ id: postDoc.id, ...postDoc.data() });
-      } catch (err) {
-        console.error('Error fetching post:', err);
-        setPostError(err.message);
-      } finally {
-        setPostBySlugLoading(false);
-      }
+      );
+    } else {
+      setPostBySlugLoading(false);
     }
 
-    fetchPost();
+    return () => unsubscribe();
   }, [slug]);
 
   return { postBySlug, postBySlugLoading, postError };
@@ -134,33 +132,39 @@ export function useSearchPosts(searchQuery) {
   const [searchLoading, setSearchLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchPosts() {
-      setSearchLoading(true);
-      try {
-        const q = query(
-          collection(db, 'posts'),
-          orderBy('title'),
-          startAt(searchQuery),
-          endAt(`${searchQuery}\uf8ff`),
-          limit(10)
-        );
+    let unsubscribe = () => {};
 
-        const querySnapshot = await getDocs(q);
-        const fetchedPosts = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setSearchResults(fetchedPosts);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      } finally {
-        setSearchLoading(false);
-      }
+    if (searchQuery) {
+      const q = query(
+        collection(db, 'posts'),
+        orderBy('title'),
+        startAt(searchQuery),
+        endAt(`${searchQuery}\uf8ff`),
+        limit(10)
+      );
+
+      unsubscribe = onSnapshot(
+        q,
+        (querySnapshot) => {
+          const fetchedPosts = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setSearchResults(fetchedPosts);
+          setSearchLoading(false);
+        },
+        (error) => {
+          console.error('Error fetching posts:', error);
+          setSearchLoading(false);
+        }
+      );
+    } else {
+      setSearchResults([]);
+      setSearchLoading(false);
     }
 
-    fetchPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return () => unsubscribe();
+  }, [searchQuery]);
 
   return { searchResults, searchLoading };
 }

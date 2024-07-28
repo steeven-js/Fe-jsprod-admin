@@ -131,8 +131,9 @@ const authFirebase = {
       path: 'sign-up',
       element: (
         <GuestGuard>
-          <AuthSplitLayout>
-            <Firebase.SignUpPage />
+          <AuthSplitLayout section={{ title: 'Hi, Welcome back' }}>
+            {/* <Firebase.SignUpPage /> */}
+            <Firebase.SignInPage />
           </AuthSplitLayout>
         </GuestGuard>
       ),

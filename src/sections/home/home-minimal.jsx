@@ -31,9 +31,9 @@ export function HomeMinimal({ sx, ...other }) {
   const renderDescription = (
     <>
       <SectionTitle
-        caption="Visualizing Success"
-        title="What's in"
-        txtGradient="Minimal?"
+        caption="Mes domaines de compétences"
+        title="Mes"
+        txtGradient="Compétences"
         sx={{ mb: { xs: 5, md: 8 }, textAlign: { xs: 'center', md: 'left' } }}
       />
 
@@ -135,17 +135,17 @@ export function HomeMinimal({ sx, ...other }) {
 const ITEMS = [
   {
     icon: `${CONFIG.site.basePath}/assets/icons/home/ic-make-brand.svg`,
-    title: 'Branding',
-    description: 'Consistent design makes it easy to brand your own.',
+    title: 'Ai chatbot',
+    description: 'Je conçois et développe des chatbots pour répondre à vos besoins.',
   },
   {
     icon: `${CONFIG.site.basePath}/assets/icons/home/ic-design.svg`,
     title: 'UI & UX design',
-    description: 'The kit is built on the principles of the atomic design system.',
+    description: 'Je crée des interfaces utilisateur intuitives et attrayantes.',
   },
   {
     icon: `${CONFIG.site.basePath}/assets/icons/home/ic-development.svg`,
-    title: 'Development',
-    description: 'Easy to customize and extend, saving you time and money.',
+    title: 'Developement web et mobile',
+    description: 'Je développe des applications web et mobiles performantes.',
   },
 ];

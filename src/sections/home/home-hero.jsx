@@ -2,21 +2,18 @@ import { useRef, useState } from 'react';
 import { m, useScroll, useSpring, useTransform, useMotionValueEvent } from 'framer-motion';
 
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
+// import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import AvatarGroup from '@mui/material/AvatarGroup';
-import Avatar, { avatarClasses } from '@mui/material/Avatar';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import { _mock } from 'src/_mock';
 import { CONFIG } from 'src/config-global';
 import { textGradient } from 'src/theme/styles';
 
@@ -31,6 +28,8 @@ import { HeroBackground } from './components/hero-background';
 const smKey = 'sm';
 const mdKey = 'md';
 const lgKey = 'lg';
+
+const { assetURL } = CONFIG.site;
 
 export function HomeHero({ sx, ...other }) {
   const theme = useTheme();
@@ -64,15 +63,14 @@ export function HomeHero({ sx, ...other }) {
           ...theme.typography.h2,
           my: 0,
           mx: 'auto',
-          maxWidth: 680,
+          maxWidth: 880,
           fontFamily: theme.typography.fontSecondaryFamily,
           [theme.breakpoints.up(lgKey)]: { fontSize: 72, lineHeight: '90px' },
         }}
       >
         <Box component="span" sx={{ width: 1, opacity: 0.24 }}>
-          Boost your building
+          Jacques Steeven
         </Box>
-        process with
         <Box
           component={m.span}
           animate={{ backgroundPosition: '200% center' }}
@@ -90,7 +88,7 @@ export function HomeHero({ sx, ...other }) {
             ml: { xs: 0.75, md: 1, xl: 1.5 },
           }}
         >
-          Minimal
+          Concepteur développeur d&apos;application
         </Box>
       </Box>
     </MInview>
@@ -106,32 +104,8 @@ export function HomeHero({ sx, ...other }) {
           [theme.breakpoints.up(lgKey)]: { fontSize: 20, lineHeight: '36px' },
         }}
       >
-        {`The starting point for your next project is based on MUI. \nEasy customization helps you build apps faster and better.`}
+        Du concept à la réalité : je donne vie à vos projets digitaux.
       </Typography>
-    </MInview>
-  );
-
-  const renderRatings = (
-    <MInview>
-      <Box
-        gap={1.5}
-        display="flex"
-        flexWrap="wrap"
-        alignItems="center"
-        justifyContent="center"
-        sx={{ typography: 'subtitle2' }}
-      >
-        <AvatarGroup sx={{ [`& .${avatarClasses.root}`]: { width: 32, height: 32 } }}>
-          {[...Array(3)].map((_, index) => (
-            <Avatar
-              key={_mock.fullName(index + 1)}
-              alt={_mock.fullName(index + 1)}
-              src={_mock.image.avatar(index + 1)}
-            />
-          ))}
-        </AvatarGroup>
-        160+ Happy customers
-      </Box>
     </MInview>
   );
 
@@ -141,41 +115,16 @@ export function HomeHero({ sx, ...other }) {
         <Stack alignItems="center" spacing={2.5}>
           <Button
             component={RouterLink}
-            href={paths.dashboard.root}
+            href={paths.github}
             color="inherit"
             size="large"
             variant="contained"
-            startIcon={<Iconify width={24} icon="iconoir:flash" />}
-          >
-            <span>
-              Live preview
-              <Box
-                component="small"
-                sx={{
-                  mt: '-3px',
-                  opacity: 0.64,
-                  display: 'flex',
-                  fontSize: theme.typography.pxToRem(10),
-                  fontWeight: theme.typography.fontWeightMedium,
-                }}
-              >
-                v{CONFIG.site.version}
-              </Box>
-            </span>
-          </Button>
-
-          <Link
-            color="inherit"
-            variant="body2"
             target="_blank"
             rel="noopener"
-            href={paths.freeUI}
-            underline="always"
-            sx={{ gap: 0.5, alignItems: 'center', display: 'inline-flex' }}
+            startIcon={<Iconify width={24} icon="mdi:github" />}
           >
-            Get free version
-            <Iconify width={16} icon="eva:external-link-fill" />
-          </Link>
+            Github
+          </Button>
         </Stack>
       </MInview>
 
@@ -184,13 +133,13 @@ export function HomeHero({ sx, ...other }) {
           color="inherit"
           size="large"
           variant="outlined"
+          href={CONFIG.cv.url}
           target="_blank"
           rel="noopener"
-          href={paths.figma}
-          startIcon={<Iconify width={24} icon="solar:figma-outline" />}
+          startIcon={<Iconify width={24} icon="pepicons-pop:cv" />}
           sx={{ borderColor: 'text.primary' }}
         >
-          Figma preview
+          Téléchargez mon CV
         </Button>
       </MInview>
     </Box>
@@ -200,23 +149,23 @@ export function HomeHero({ sx, ...other }) {
     <Stack spacing={3} sx={{ textAlign: 'center' }}>
       <MInview>
         <Typography variant="overline" sx={{ opacity: 0.4 }}>
-          Available For
+          Outils de développement
         </Typography>
       </MInview>
 
       <Stack spacing={2.5} direction="row">
-        {['js', 'ts', 'nextjs', 'vite', 'figma'].map((platform) => (
-          <MInview key={platform}>
-            {platform === 'nextjs' ? (
+        {['laravel', 'react', 'firebase', 'github', 'vscode'].map((framework) => (
+          <MInview key={framework}>
+            {framework === 'nextjs' ? (
               <SvgColor
-                src={`${CONFIG.site.basePath}/assets/icons/platforms/ic-${platform}.svg`}
+                src={`${CONFIG.site.basePath}/assets/icons/frameworks/ic-${framework}.svg`}
                 sx={{ width: 24, height: 24 }}
               />
             ) : (
               <Box
                 component="img"
-                alt={platform}
-                src={`${CONFIG.site.basePath}/assets/icons/platforms/ic-${platform}.svg`}
+                alt={framework}
+                src={`${CONFIG.site.basePath}/assets/icons/frameworks/ic-${framework}.svg`}
                 sx={{ width: 24, height: 24 }}
               />
             )}
@@ -281,7 +230,6 @@ export function HomeHero({ sx, ...other }) {
             <m.div style={{ y: y1 }}>{renderHeading}</m.div>
             <m.div style={{ y: y2 }}>{renderText}</m.div>
           </Stack>
-          <m.div style={{ y: y3 }}>{renderRatings}</m.div>
           <m.div style={{ y: y4 }}>{renderButtons}</m.div>
           <m.div style={{ y: y5 }}>{renderIcons}</m.div>
         </Container>

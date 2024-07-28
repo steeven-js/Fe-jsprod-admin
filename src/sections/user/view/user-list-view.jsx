@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { doc, getDocs, deleteDoc, collection } from 'firebase/firestore';
+import { useState, useCallback } from 'react';
+import { doc, deleteDoc } from 'firebase/firestore';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -10,18 +10,20 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useUsersData } from 'src/hooks/use-users';
 import { useSetState } from 'src/hooks/use-set-state';
 
 import { db } from 'src/utils/firebase';
 
 import { varAlpha } from 'src/theme/styles';
-import { _roles, USER_STATUS_OPTIONS } from 'src/_mock';
+import { USER_STATUS_OPTIONS } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Label } from 'src/components/label';
@@ -61,6 +63,16 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
+const ROLE_OPTIONS = [
+  'User',
+  'Admin',
+  'Editor',
+  'Manager',
+  'Developer',
+];
+
+// ----------------------------------------------------------------------
+
 export function UserListView() {
   const table = useTable();
 
@@ -68,43 +80,9 @@ export function UserListView() {
 
   const confirm = useBoolean();
 
-  // Etat pour stocker les données des utilisateurs
-  const [tableData, setTableData] = useState([]);
+  const [_tableData, setTableData] = useState([]);
 
-  // ==========================================================
-  // Firebase: Fetch and Log Users
-  // ==========================================================
-  useEffect(() => {
-    const fetchAndLogUsers = async () => {
-      try {
-        // Référence à la collection 'users'
-        const usersRef = collection(db, 'users');
-
-        // Récupère tous les documents de la collection 'users'
-        const querySnapshot = await getDocs(usersRef);
-
-        // Crée un tableau pour stocker les données des utilisateurs
-        const users = [];
-
-        // Itère à travers chaque document et log les données
-        querySnapshot.forEach((_doc) => {
-          const data = _doc.data();
-          // console.log(doc.id, '=>', data);
-          users.push({ id: _doc.id, ...data });
-        });
-
-        // Met à jour l'état avec les données des utilisateurs récupérées
-        setTableData(users);
-      } catch (error) {
-        // Log une erreur si la récupération des utilisateurs échoue
-        console.error('Error fetching users:', error);
-      }
-    };
-
-    // Appelle la fonction pour récupérer et log les utilisateurs
-    fetchAndLogUsers();
-  }, []); // Le tableau vide [] garantit que cet effet se déclenche uniquement une fois après le montage du composant
-  // ==========================================================
+  const { users: tableData, loading } = useUsersData();
 
   const filters = useSetState({ name: '', role: [], status: 'all' });
 
@@ -124,8 +102,6 @@ export function UserListView() {
   const handleDeleteRow = useCallback(
     (id) => {
       const deleteRow = tableData.filter((row) => row.id !== id);
-
-      // console.log('Delete row id:', id);
 
       toast.success('Delete success!');
 
@@ -181,6 +157,14 @@ export function UserListView() {
     },
     [filters, table]
   );
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -246,7 +230,7 @@ export function UserListView() {
           <UserTableToolbar
             filters={filters}
             onResetPage={table.onResetPage}
-            options={{ roles: _roles }}
+            options={{ roles: ROLE_OPTIONS }}
           />
 
           {canReset && (

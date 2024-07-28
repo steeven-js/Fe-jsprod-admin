@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles';
 
 import { usePathname } from 'src/routes/hooks';
 
+import { useAuth } from 'src/hooks/use-auth';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { Main } from './main';
@@ -12,6 +13,7 @@ import { Footer, HomeFooter } from './footer';
 import { HeaderBase } from '../core/header-base';
 import { LayoutSection } from '../core/layout-section';
 import { navData as mainNavData } from '../config-nav-main';
+import { navData as customMainNavData } from '../config-nav-main-custom';
 
 // ----------------------------------------------------------------------
 
@@ -21,6 +23,8 @@ export function MainLayout({ sx, data, children }) {
   const pathname = usePathname();
 
   const mobileNavOpen = useBoolean();
+
+  const { user } = useAuth();
 
   const homePage = pathname === '/';
 
@@ -57,7 +61,7 @@ export function MainLayout({ sx, data, children }) {
               ),
               rightAreaStart: (
                 <NavDesktop
-                  data={navData}
+                  data={user ? customMainNavData : navData}
                   sx={{
                     display: 'none',
                     [theme.breakpoints.up(layoutQuery)]: {

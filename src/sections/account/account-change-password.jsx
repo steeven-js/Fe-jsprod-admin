@@ -8,7 +8,11 @@ import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
+
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useUpdateFirebasePassword } from 'src/hooks/use-auth';
 
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
@@ -35,7 +39,9 @@ export const ChangePassWordSchema = zod
 // ----------------------------------------------------------------------
 
 export function AccountChangePassword() {
+  const { updateFirebasePassword } = useUpdateFirebasePassword();
   const password = useBoolean();
+  const router = useRouter();
 
   const defaultValues = { oldPassword: '', newPassword: '', confirmNewPassword: '' };
 
@@ -53,12 +59,12 @@ export function AccountChangePassword() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await updateFirebasePassword(data.newPassword);
       reset();
-      toast.success('Update success!');
-      console.info('DATA', data);
+      router.push(paths.dashboard.root);
+      toast.success('Password has been updated');
     } catch (error) {
-      console.error(error);
+      toast.error(error.message);
     }
   });
 

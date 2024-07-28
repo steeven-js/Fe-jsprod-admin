@@ -2,9 +2,7 @@ import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
 import Drawer from '@mui/material/Drawer';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
@@ -13,15 +11,14 @@ import IconButton from '@mui/material/IconButton';
 import { paths } from 'src/routes/paths';
 import { useRouter, usePathname } from 'src/routes/hooks';
 
-import { _mock } from 'src/_mock';
+import { auth } from 'src/utils/firebase';
+
 import { varAlpha } from 'src/theme/styles';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { AnimateAvatar } from 'src/components/animate';
-
-import { useMockedUser } from 'src/auth/hooks';
 
 import { UpgradeBlock } from './nav-upgrade';
 import { AccountButton } from './account-button';
@@ -31,12 +28,10 @@ import { SignOutButton } from './sign-out-button';
 
 export function AccountDrawer({ data = [], sx, ...other }) {
   const theme = useTheme();
-
   const router = useRouter();
-
   const pathname = usePathname();
 
-  const { user } = useMockedUser();
+  const authUser = auth.currentUser;
 
   const [open, setOpen] = useState(false);
 
@@ -60,7 +55,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
     <AnimateAvatar
       width={96}
       slotProps={{
-        avatar: { src: user?.photoURL, alt: user?.displayName },
+        avatar: { src: authUser?.photoURL, alt: authUser?.displayName },
         overlay: {
           border: 2,
           spacing: 3,
@@ -68,7 +63,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
         },
       }}
     >
-      {user?.displayName?.charAt(0).toUpperCase()}
+      {authUser?.displayName?.charAt(0).toUpperCase()}
     </AnimateAvatar>
   );
 
@@ -77,8 +72,8 @@ export function AccountDrawer({ data = [], sx, ...other }) {
       <AccountButton
         open={open}
         onClick={handleOpenDrawer}
-        photoURL={user?.photoURL}
-        displayName={user?.displayName}
+        photoURL={authUser?.photoURL}
+        displayName={authUser?.displayName}
         sx={sx}
         {...other}
       />
@@ -102,38 +97,12 @@ export function AccountDrawer({ data = [], sx, ...other }) {
             {renderAvatar}
 
             <Typography variant="subtitle1" noWrap sx={{ mt: 2 }}>
-              {user?.displayName}
+              {authUser?.displayName}
             </Typography>
 
-            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }} noWrap>
-              {user?.email}
+            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5, mb: 1 }} noWrap>
+              {authUser?.email}
             </Typography>
-          </Stack>
-
-          <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="center" sx={{ p: 3 }}>
-            {[...Array(3)].map((_, index) => (
-              <Tooltip
-                key={_mock.fullName(index + 1)}
-                title={`Switch to: ${_mock.fullName(index + 1)}`}
-              >
-                <Avatar
-                  alt={_mock.fullName(index + 1)}
-                  src={_mock.image.avatar(index + 1)}
-                  onClick={() => {}}
-                />
-              </Tooltip>
-            ))}
-
-            <Tooltip title="Add account">
-              <IconButton
-                sx={{
-                  bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
-                  border: `dashed 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.32)}`,
-                }}
-              >
-                <Iconify icon="mingcute:add-line" />
-              </IconButton>
-            </Tooltip>
           </Stack>
 
           <Stack
@@ -145,14 +114,22 @@ export function AccountDrawer({ data = [], sx, ...other }) {
             }}
           >
             {data.map((option) => {
-              const rootLabel = pathname.includes('/dashboard') ? 'Home' : 'Dashboard';
+              let rootLabel = option.label;
+              let rootHref = option.href;
 
-              const rootHref = pathname.includes('/dashboard') ? '/' : paths.dashboard.root;
+              if (option.label === 'Home') {
+                rootLabel = pathname.includes('/dashboard') ? 'Home' : 'Dashboard';
+                rootHref = pathname.includes('/dashboard') ? '/' : paths.dashboard.root;
+              } else if (option.label === 'Profile') {
+                rootHref = paths.dashboard.user.profile(authUser?.uid);
+              } else if (option.label === 'Account settings') {
+                rootHref = paths.dashboard.user.account(authUser?.uid);
+              }
 
               return (
                 <MenuItem
                   key={option.label}
-                  onClick={() => handleClickItem(option.label === 'Home' ? rootHref : option.href)}
+                  onClick={() => handleClickItem(rootHref)}
                   sx={{
                     py: 1,
                     color: 'text.secondary',
@@ -163,7 +140,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
                   {option.icon}
 
                   <Box component="span" sx={{ ml: 2 }}>
-                    {option.label === 'Home' ? rootLabel : option.label}
+                    {rootLabel}
                   </Box>
 
                   {option.info && (

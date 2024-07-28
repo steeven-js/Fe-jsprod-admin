@@ -1,288 +1,86 @@
-import { m } from 'framer-motion';
-
 import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
 import Container from '@mui/material/Container';
-import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
-import { paths } from 'src/routes/paths';
-
-import { useTabs } from 'src/hooks/use-tabs';
-
-import { CONFIG } from 'src/config-global';
-import { varAlpha } from 'src/theme/styles';
-
-import { Iconify } from 'src/components/iconify';
-import { varFade, varScale, MotionViewport } from 'src/components/animate';
-
-import { SectionTitle } from './components/section-title';
-import { FloatLine, FloatXIcon } from './components/svg-elements';
+import { CustomPricingCard } from 'src/sections/pricing/custom-pricing-card';
 
 // ----------------------------------------------------------------------
 
-export function HomePricing({ sx, ...other }) {
-  const theme = useTheme();
+const _pricingPlans = [
+  {
+    subscription: 'basic',
+    price: 299.99,
+    caption:
+      "Parfait pour les petites entreprises ou les startups, ce forfait comprend la création d'un chatbot simple avec des fonctionnalités de base pour répondre aux questions fréquemment posées.",
+    lists: [
+      'Chatbot IA simple',
+      "Jusqu'à 1000 interactions par mois",
+      'Intégration sur site web et Facebook Messenger',
+      'Réponses préprogrammées et apprentissage limité',
+      'Support par email',
+    ],
+    labelAction: 'Current plan',
+  },
+  {
+    subscription: 'pro',
+    price: 599.99,
+    caption:
+      'Idéal pour les entreprises de taille moyenne, ce forfait offre un chatbot plus avancé avec des capacités de personnalisation et une intégration à vos systèmes existants.',
+    lists: [
+      'Chatbot IA avancé avec apprentissage automatique',
+      "Jusqu'à 10 000 interactions par mois",
+      'Intégration multi-plateforme (site web, réseaux sociaux, applications mobiles)',
+      "Personnalisation de l'avatar et de la voix",
+      'Analyses et rapports détaillés',
+      'Support prioritaire par chat et email',
+    ],
+    labelAction: 'Choose starter',
+  },
+  {
+    subscription: 'entreprise',
+    price: 999.99,
+    caption:
+      'Conçu pour les grandes entreprises, ce forfait propose un chatbot entièrement personnalisé avec des fonctionnalités avancées, une intégration complète et un support dédié.',
+    lists: [
+      'Chatbot IA haute performance avec traitement du langage naturel avancé',
+      'Interactions illimitées',
+      'Intégration sur mesure avec vos systèmes existants',
+      'Apprentissage continu et amélioration automatique',
+      'Gestion multi-langue',
+      'Tableaux de bord en temps réel et analyses prédictives',
+      'Support dédié 24/7 avec un gestionnaire de compte',
+    ],
+    labelAction: 'Choose entreprise ',
+  },
+];
 
-  const tabs = useTabs('Standard');
+// ----------------------------------------------------------------------
 
-  const renderDescription = (
-    <SectionTitle
-      caption="plans"
-      title="Transparent"
-      txtGradient="pricing"
-      description="Choose from flexible pricing options designed to fit your business needs and budget with no hidden fees."
-      sx={{ mb: 8, textAlign: 'center' }}
-    />
-  );
+export function HomePricing({ sx }) {
+  return (
+    <Container sx={{ pt: 5, pb: 10 }}>
+      <Typography variant="h3" align="center" sx={{ mb: 2 }}>
+        Plans Flexibles pour
+        <br /> Vos Besoins et Votre Budget
+      </Typography>
 
-  const renderContentDesktop = (
-    <Box gridTemplateColumns="repeat(3, 1fr)" sx={{ display: { xs: 'none', md: 'grid' } }}>
-      {PLANS.map((plan) => (
-        <PlanCard
-          key={plan.license}
-          plan={plan}
-          sx={{
-            ...(plan.license === 'Plus' && {
-              [theme.breakpoints.down(1440)]: {
-                borderLeft: `dashed 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.2)}`,
-                borderRight: `dashed 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.2)}`,
-              },
-            }),
-          }}
-        />
-      ))}
-    </Box>
-  );
-
-  const renderContentMobile = (
-    <Stack spacing={5} alignItems="center" sx={{ display: { md: 'none' } }}>
-      <Tabs
-        value={tabs.value}
-        onChange={tabs.onChange}
-        sx={{
-          boxShadow: `0px -2px 0px 0px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.08)} inset`,
-        }}
-      >
-        {PLANS.map((tab) => (
-          <Tab key={tab.license} value={tab.license} label={tab.license} />
-        ))}
-      </Tabs>
+      <Typography align="center" sx={{ color: 'text.secondary' }}>
+        Découvrez nos offres de création de chatbots adaptées à tous les besoins et budgets. Que
+        vous soyez une petite entreprise cherchant à automatiser vos réponses client ou une grande
+        société souhaitant un chatbot personnalisé et sophistiqué, nous avons la solution idéale
+        pour vous.{' '}
+      </Typography>
 
       <Box
-        sx={{
-          width: 1,
-          borderRadius: 2,
-          border: `dashed 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.2)}`,
-        }}
+        gap={{ xs: 3, md: 0 }}
+        display="grid"
+        alignItems={{ md: 'center' }}
+        gridTemplateColumns={{ md: 'repeat(3, 1fr)' }}
       >
-        {PLANS.map(
-          (tab) => tab.license === tabs.value && <PlanCard key={tab.license} plan={tab} />
-        )}
+        {_pricingPlans.map((card, index) => (
+          <CustomPricingCard key={card.subscription} card={card} index={index} />
+        ))}
       </Box>
-    </Stack>
-  );
-
-  return (
-    <Stack component="section" sx={{ py: 10, position: 'relative', ...sx }} {...other}>
-      <MotionViewport>
-        <FloatLine vertical sx={{ top: 0, left: 80 }} />
-
-        <Container>{renderDescription}</Container>
-
-        <Box
-          sx={{
-            position: 'relative',
-            '&::before, &::after': {
-              width: 64,
-              height: 64,
-              content: "''",
-              [theme.breakpoints.up(1440)]: {
-                display: 'block',
-              },
-            },
-          }}
-        >
-          <Container>{renderContentDesktop}</Container>
-
-          <FloatLine sx={{ top: 64, left: 0 }} />
-          <FloatLine sx={{ bottom: 64, left: 0 }} />
-        </Box>
-
-        <Container>{renderContentMobile}</Container>
-      </MotionViewport>
-    </Stack>
+    </Container>
   );
 }
-
-function PlanCard({ plan, sx, ...other }) {
-  const standardLicense = plan.license === 'Standard';
-
-  const plusLicense = plan.license === 'Plus';
-
-  const renderLines = (
-    <>
-      <FloatLine vertical sx={{ top: -64, left: 0, height: 'calc(100% + (64px * 2))' }} />
-      <FloatLine vertical sx={{ top: -64, right: 0, height: 'calc(100% + (64px * 2))' }} />
-      <FloatXIcon sx={{ top: -8, left: -8 }} />
-      <FloatXIcon sx={{ top: -8, right: -8 }} />
-      <FloatXIcon sx={{ bottom: -8, left: -8 }} />
-      <FloatXIcon sx={{ bottom: -8, right: -8 }} />
-    </>
-  );
-
-  return (
-    <Stack
-      spacing={5}
-      component={MotionViewport}
-      sx={{
-        px: 6,
-        py: 8,
-        position: 'relative',
-        ...sx,
-      }}
-      {...other}
-    >
-      {plusLicense && renderLines}
-
-      <Stack direction="row" alignItems="center">
-        <Stack flexGrow={1}>
-          <m.div variants={varFade({ distance: 24 }).inLeft}>
-            <Typography variant="h4" component="h6">
-              {plan.license}
-            </Typography>
-          </m.div>
-
-          <m.div variants={varScale({ distance: 24 }).inX}>
-            <Box
-              sx={{
-                width: 32,
-                height: 6,
-                opacity: 0.24,
-                borderRadius: 1,
-                bgcolor: 'error.main',
-                ...(standardLicense && { bgcolor: 'primary.main' }),
-                ...(plusLicense && { bgcolor: 'secondary.main' }),
-              }}
-            />
-          </m.div>
-        </Stack>
-
-        <m.div variants={varFade({ distance: 24 }).inLeft}>
-          <Box component="span" sx={{ typography: 'h3' }}>
-            ${plan.price}
-          </Box>
-        </m.div>
-      </Stack>
-
-      <Stack direction="row" spacing={2}>
-        {plan.icons.map((icon, index) => (
-          <Box
-            component={m.img}
-            variants={varFade().in}
-            key={icon}
-            alt={icon}
-            src={icon}
-            sx={{
-              width: 24,
-              height: 24,
-              ...(standardLicense && [1, 2].includes(index) && { display: 'none' }),
-            }}
-          />
-        ))}
-        {standardLicense && (
-          <Box component={m.span} variants={varFade().in} sx={{ ml: -1 }}>
-            (only)
-          </Box>
-        )}
-      </Stack>
-
-      <Stack spacing={2.5}>
-        {plan.commons.map((option) => (
-          <Stack
-            key={option}
-            component={m.div}
-            variants={varFade().in}
-            spacing={1.5}
-            direction="row"
-            alignItems="center"
-            sx={{ typography: 'body2' }}
-          >
-            <Iconify width={16} icon="eva:checkmark-fill" />
-            {option}
-          </Stack>
-        ))}
-
-        <m.div variants={varFade({ distance: 24 }).inLeft}>
-          <Divider sx={{ borderStyle: 'dashed' }} />
-        </m.div>
-
-        {plan.options.map((option, index) => {
-          const disabled =
-            (standardLicense && [1, 2, 3].includes(index)) || (plusLicense && [3].includes(index));
-
-          return (
-            <Stack
-              key={option}
-              component={m.div}
-              variants={varFade().in}
-              spacing={1.5}
-              direction="row"
-              alignItems="center"
-              sx={{
-                typography: 'body2',
-                ...(disabled && { color: 'text.disabled', textDecoration: 'line-through' }),
-              }}
-            >
-              <Iconify width={18} icon={disabled ? 'mingcute:close-line' : 'eva:checkmark-fill'} />
-              {option}
-            </Stack>
-          );
-        })}
-      </Stack>
-
-      <m.div variants={varFade({ distance: 24 }).inUp}>
-        <Button
-          fullWidth
-          variant={plusLicense ? 'contained' : 'outlined'}
-          color="inherit"
-          size="large"
-          target="_blank"
-          rel="noopener"
-          href={paths.minimalStore}
-        >
-          Get started
-        </Button>
-      </m.div>
-    </Stack>
-  );
-}
-
-// ----------------------------------------------------------------------
-
-const PLANS = [...Array(3)].map((_, index) => ({
-  license: ['Standard', 'Plus', 'Extended'][index],
-  price: [69, 129, 599][index],
-  commons: [
-    'One end products',
-    '12 months updates',
-    '6 months of support',
-    'One-time payments',
-    'Lifetime perpetual license.',
-  ],
-  options: [
-    'JavaScript version',
-    'TypeScript version',
-    'Design resources (Figma)',
-    'Commercial applications',
-  ],
-  icons: [
-    `${CONFIG.site.basePath}/assets/icons/platforms/ic-js.svg`,
-    `${CONFIG.site.basePath}/assets/icons/platforms/ic-ts.svg`,
-    `${CONFIG.site.basePath}/assets/icons/platforms/ic-figma.svg`,
-  ],
-}));

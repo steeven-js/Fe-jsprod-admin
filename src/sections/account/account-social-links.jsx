@@ -4,13 +4,16 @@ import Card from '@mui/material/Card';
 import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
+import { useUpdateUserProfile } from 'src/hooks/use-auth';
+
 import { toast } from 'src/components/snackbar';
 import { SocialIcon } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
 
-export function AccountSocialLinks({ socialLinks }) {
+export function AccountSocialLinks({ socialLinks, userProfile }) {
+  const { updateUserProfile, error } = useUpdateUserProfile();
   const defaultValues = {
     facebook: socialLinks.facebook || '',
     instagram: socialLinks.instagram || '',
@@ -27,11 +30,18 @@ export function AccountSocialLinks({ socialLinks }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      toast.success('Update success!');
+      await updateUserProfile(data);
+      if (!error) {
+        toast.success('Update success!');
+      } else {
+        // eslint-disable-next-line prefer-template
+        toast.error('Update failed: ' + error);
+      }
       console.info('DATA', data);
-    } catch (error) {
-      console.error(error);
+    } catch (_error) {
+      console.error(_error);
+      // eslint-disable-next-line prefer-template
+      toast.error('Update failed: ' + _error.message);
     }
   });
 

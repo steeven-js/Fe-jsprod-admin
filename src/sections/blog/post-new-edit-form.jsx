@@ -1,7 +1,7 @@
 import { z as zod } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, setDoc, updateDoc, collection } from 'firebase/firestore';
 
@@ -49,8 +49,21 @@ export const NewPostSchema = zod.object({
 
 export function PostNewEditForm({ currentPost }) {
   const router = useRouter();
+  const [isCommentsEnabled, setIsCommentsEnabled] = useState(true);
+  const [isPublish, setIsPublish] = useState(true);
 
   const preview = useBoolean();
+
+  const handleSwitchChange = (event) => {
+    setIsCommentsEnabled(event.target.checked);
+  };
+
+  const handleSwitchChange2 = (event) => {
+    setIsPublish(event.target.checked);
+  };
+
+  // console.log("Les commentaires sont", isCommentsEnabled ? "activés" : "désactivés");
+  // console.log("Post publié", isPublish ? "Oui" : "Non");
 
   const defaultValues = useMemo(
     () => ({
@@ -63,6 +76,8 @@ export function PostNewEditForm({ currentPost }) {
       metaTitle: currentPost?.metaTitle || '',
       metaDescription: currentPost?.metaDescription || '',
       createdAt: currentPost?.createdAt || Date.now(),
+      isCommentsEnabled: currentPost?.isCommentsEnabled || true,
+      publish: currentPost?.publish || 'draft',
     }),
     [currentPost]
   );
@@ -122,14 +137,15 @@ export function PostNewEditForm({ currentPost }) {
             avatarUrl: auth.currentUser.photoURL
               ? auth.currentUser.photoURL
               : 'https://api-dev-minimal-v6.vercel.app/assets/images/avatar/avatar-25.webp',
-            name: auth.currentUser.displayName ? auth.currentUser.displayName : 'Jacques Steeven',
+            name: auth.currentUser.displayName ? auth.currentUser.displayName : 'Author',
           },
         ],
         updatedAt: now,
         totalViews: currentPost?.totalViews || 0,
         totalShares: currentPost?.totalShares || 0,
         totalComments: currentPost?.totalComments || 0,
-        publish: 'published',
+        isCommentsEnabled,
+        publish : isPublish ? 'published' : 'draft',
       };
 
       // Si c'est un nouveau post, ajoutez createdAt
@@ -258,7 +274,13 @@ export function PostNewEditForm({ currentPost }) {
         />
 
         <FormControlLabel
-          control={<Switch defaultChecked inputProps={{ id: 'comments-switch' }} />}
+          control={
+            <Switch
+              checked={isCommentsEnabled}
+              onChange={handleSwitchChange}
+              inputProps={{ id: 'comments-switch' }}
+            />
+          }
           label="Enable comments"
         />
       </Stack>
@@ -268,7 +290,13 @@ export function PostNewEditForm({ currentPost }) {
   const renderActions = (
     <Box display="flex" alignItems="center" flexWrap="wrap" justifyContent="flex-end">
       <FormControlLabel
-        control={<Switch defaultChecked inputProps={{ id: 'publish-switch' }} />}
+        control={
+          <Switch
+            checked={isPublish}
+            onChange={handleSwitchChange2}
+            inputProps={{ id: 'publish-switch' }}
+          />
+        }
         label="Publish"
         sx={{ pl: 3, flexGrow: 1 }}
       />

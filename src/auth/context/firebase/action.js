@@ -65,6 +65,7 @@ export const signUp = async ({ email, password, firstName, lastName }) => {
       uid: newUser.user?.uid,
       email,
       displayName: `${firstName} ${lastName}`,
+      photoURL: 'https://api-dev-minimal-v6.vercel.app/assets/images/avatar/avatar-25.webp',
     });
   } catch (error) {
     console.error('Error during sign up:', error);

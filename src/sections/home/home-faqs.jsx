@@ -1,8 +1,8 @@
+/* eslint-disable react/no-unescaped-entities */
+
 import { useState } from 'react';
 import { m } from 'framer-motion';
 
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -23,100 +23,66 @@ import { FloatLine, FloatPlusIcon, FloatTriangleDownIcon } from './components/sv
 
 const FAQs = [
   {
-    question: 'How can I get the update?',
+    question: 'Quels types de chatbots AI pouvez-vous développer ?',
     answer: (
       <Typography>
-        You will get 12 months of free
-        <Link
-          href="https://support.mui.com/hc/en-us/articles/360008775240-How-do-I-get-access-to-an-item-I-purchased"
-          target="_blank"
-          rel="noopener"
-          sx={{ mx: 0.5 }}
-        >
-          updates
-        </Link>
-        with the purchase. Please renew your license to get updates after that.
+        Je peux développer différents types de chatbots, notamment des chatbots de service client,
+        des chatbots pour le commerce électronique, des chatbots éducatifs, et des chatbots de
+        réservation, en fonction des besoins spécifiques de votre entreprise.
       </Typography>
     ),
   },
   {
-    question: 'Which license is right for you?',
-    answer: (
-      <Box component="ul" sx={{ pl: 3, listStyleType: 'disc' }}>
-        <li> All licenses do not apply to open source.</li>
-        <li> One licenses / one end product (3 licenses / 3 products...).</li>
-        <li>
-          <strong>Standard / Plus</strong> license used in free products (Internal management...).
-        </li>
-        <li>
-          <strong>Extended</strong> license used in charge products, collect fees from users
-          (SAAS...).
-        </li>
-        <li>
-          Learn more about the
-          <Link
-            href="https://docs.minimals.cc/package/"
-            target="_blank"
-            rel="noopener"
-            sx={{ mx: 0.5 }}
-          >
-            package & license
-          </Link>
-        </li>
-      </Box>
-    ),
-  },
-  {
-    question: 'How long is my license valid for?',
-    answer: (
-      <Box component="ul" sx={{ pl: 3, listStyleType: 'disc' }}>
-        <li> The license is lifetime.</li>
-        <li> You get 12 months of free updates.</li>
-      </Box>
-    ),
-  },
-  {
-    question: 'Which platforms will the template support?',
+    question:
+      "Comment les chatbots AI peuvent-ils améliorer l'expérience client sur mon site web ?",
     answer: (
       <Typography>
-        {`The components in MUI are designed to work in the latest, stable releases of all major browsers, including Chrome, Firefox, Safari, and Edge. We don't support Internet Explorer 11. `}
-        Learn more about the
-        <Link
-          href="https://mui.com/material-ui/getting-started/supported-platforms/"
-          target="_blank"
-          rel="noopener"
-          sx={{ mx: 0.5 }}
-        >
-          supported platforms
-        </Link>
+        Les chatbots AI peuvent offrir une assistance 24/7, répondre instantanément aux questions
+        fréquentes, guider les utilisateurs à travers votre site, et même effectuer des transactions
+        simples, améliorant ainsi l'efficacité et la satisfaction des clients.
       </Typography>
     ),
   },
   {
-    question: 'For what kind of projects is the Standard license intended?',
+    question:
+      'Quelle est votre méthodologie pour concevoir une interface utilisateur (UI) attrayante ?',
     answer: (
       <Typography>
-        The Standard license is designed for internal applications in which staff will access the
-        application. An example could be the back-office dashboard of a public-facing e-commerce
-        website in which staff would sign in and manage inventory, customers, etc.
+        Je commence par comprendre vos objectifs commerciaux et les besoins de vos utilisateurs,
+        puis je crée des wireframes et des prototypes. J'effectue des tests utilisateurs pour
+        affiner le design et m'assurer qu'il est à la fois esthétique et fonctionnel.
       </Typography>
     ),
   },
   {
-    question: 'Do you have a free demo to review the code before purchasing?',
+    question: 'Pouvez-vous fournir des exemples de travaux précédents en UI & UX design ?',
     answer: (
       <Typography>
-        Yes, you can check out our
-        <Link
-          href="https://mui.com/store/items/minimal-dashboard-free/"
-          target="_blank"
-          rel="noopener"
-          sx={{ mx: 0.5 }}
-        >
-          open source
-        </Link>
-        dashboard template which should give you an overview of the code quality and folder
-        structure. Keep in mind that some aspects may differ from this Paid version.
+        Oui, je peux vous montrer des exemples de projets passés où j'ai conçu des interfaces
+        utilisateur intuitives et des expériences utilisateur fluides. Ces exemples démontrent ma
+        capacité à créer des designs qui engagent et satisfont les utilisateurs.
+      </Typography>
+    ),
+  },
+  {
+    question:
+      'Quels frameworks et bibliothèques utilisez-vous pour le développement web et mobile ?',
+    answer: (
+      <Typography>
+        Pour le développement web, j'utilise des frameworks comme React.js et Angular. Pour le
+        développement mobile, je travaille avec React Native et Flutter pour créer des applications
+        performantes et cross-platform.
+      </Typography>
+    ),
+  },
+  {
+    question:
+      "Comment gérez-vous les mises à jour et l'évolution des applications après leur lancement ?",
+    answer: (
+      <Typography>
+        Je propose des services de maintenance continue pour m'assurer que les applications restent
+        à jour avec les dernières technologies et tendances. Je gère également les mises à jour en
+        fonction des retours des utilisateurs et des besoins évolutifs de l'entreprise.
       </Typography>
     ),
   },
@@ -134,8 +100,8 @@ export function HomeFAQs({ sx, ...other }) {
   const renderDescription = (
     <SectionTitle
       caption="FAQs"
-      title="We’ve got the"
-      txtGradient="answers"
+      title="J'ai les"
+      txtGradient="réponses"
       sx={{ textAlign: 'center' }}
     />
   );
@@ -216,12 +182,12 @@ export function HomeFAQs({ sx, ...other }) {
       }}
     >
       <m.div variants={varFade().in}>
-        <Typography variant="h4">Still have questions?</Typography>
+        <Typography variant="h4">Vous avez toujours des question?</Typography>
       </m.div>
 
       <m.div variants={varFade().in}>
         <Typography sx={{ mt: 2, mb: 3, color: 'text.secondary' }}>
-          Please describe your case to receive the most accurate advice
+          N'hésitez pas à nous contacter pour obtenir plus d'informations.
         </Typography>
       </m.div>
 
@@ -229,10 +195,10 @@ export function HomeFAQs({ sx, ...other }) {
         <Button
           color="inherit"
           variant="contained"
-          href="mailto:support@minimals.cc?subject=[Feedback] from Customer"
+          href="mailto:jacques.steeven@gmail.com?subject=[Feedback] from Customer"
           startIcon={<Iconify icon="fluent:mail-24-filled" />}
         >
-          Contact us
+          Me contacter
         </Button>
       </m.div>
     </Stack>

@@ -15,8 +15,6 @@ import { _userAbout, _userFeeds, _userFriends, _userGallery, _userFollowers } fr
 import { Iconify } from 'src/components/iconify';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { useMockedUser } from 'src/auth/hooks';
-
 import { ProfileHome } from '../profile-home';
 import { ProfileCover } from '../profile-cover';
 import { ProfileFriends } from '../profile-friends';
@@ -42,8 +40,7 @@ const TABS = [
 
 // ----------------------------------------------------------------------
 
-export function UserProfileView() {
-  const { user } = useMockedUser();
+export function UserProfileView({ userId, userProfile }) {
 
   const [searchFriends, setSearchFriends] = useState('');
 
@@ -60,16 +57,16 @@ export function UserProfileView() {
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'Card', href: paths.dashboard.user.cards },
-          { name: user?.displayName },
+          { name: userProfile?.name },
         ]}
         sx={{ mb: { xs: 3, md: 5 } }}
       />
 
       <Card sx={{ mb: 3, height: 290 }}>
         <ProfileCover
-          role={_userAbout.role}
-          name={user?.displayName}
-          avatarUrl={user?.photoURL}
+          role={userProfile.role}
+          name={userProfile?.name}
+          avatarUrl={userProfile?.avatarUrl}
           coverUrl={_userAbout.coverUrl}
         />
 

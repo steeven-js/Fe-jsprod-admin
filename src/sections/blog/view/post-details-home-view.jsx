@@ -1,13 +1,10 @@
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-// import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-// import Divider from '@mui/material/Divider';
 import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-// import AvatarGroup from '@mui/material/AvatarGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { paths } from 'src/routes/paths';
@@ -22,8 +19,6 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { PostItem } from '../post-item';
 import { PostDetailsSkeleton } from '../post-skeleton';
-// import { PostCommentList } from '../post-comment-list';
-// import { PostCommentForm } from '../post-comment-form';
 import { PostDetailsHero } from '../post-details-hero';
 
 // ----------------------------------------------------------------------
@@ -115,28 +110,8 @@ export function PostDetailsHomeView({ post, latestPosts, loading, error }) {
                 label={fShortenNumber(post?.totalFavorites)}
                 sx={{ mr: 1 }}
               />
-
-              {/* <AvatarGroup>
-                {post?.favoritePerson.map((person) => (
-                  <Avatar key={person.name} alt={person.name} src={person.avatarUrl} />
-                ))}
-              </AvatarGroup> */}
             </Stack>
           </Stack>
-
-          {/* <Stack direction="row" sx={{ mb: 3, mt: 5 }}>
-            <Typography variant="h4">Comments</Typography>
-
-            <Typography variant="subtitle2" sx={{ color: 'text.disabled' }}>
-              ({post?.comments.length})
-            </Typography>
-          </Stack>
-
-          <PostCommentForm />
-
-          <Divider sx={{ mt: 5, mb: 2 }} />
-
-          <PostCommentList comments={post?.comments} /> */}
         </Stack>
       </Container>
 

@@ -34,6 +34,7 @@ export const paths = {
   minimalStore: 'https://mui.com/store/items/minimal-dashboard/',
   freeUI: 'https://mui.com/store/items/minimal-dashboard-free/',
   figma: 'https://www.figma.com/design/cAPz4pYPtQEXivqe11EcDE/%5BPreview%5D-Minimal-Web.v6.0.0',
+  github: 'https://github.com/steeven-js',
   product: {
     root: `/product`,
     checkout: `/product/checkout`,
@@ -116,7 +117,7 @@ export const paths = {
       list: `${ROOTS.DASHBOARD}/user/list`,
       cards: `${ROOTS.DASHBOARD}/user/cards`,
       profile: (id) => `${ROOTS.DASHBOARD}/user/profile/${id}`,
-      account: `${ROOTS.DASHBOARD}/user/account`,
+      account: (id) => `${ROOTS.DASHBOARD}/user/account/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/user/${id}/edit`,
       demo: {
         edit: `${ROOTS.DASHBOARD}/user/${MOCK_ID}/edit`,
@@ -180,4 +181,14 @@ export const paths = {
       },
     },
   },
+  // PLANTMED
+  plantmed: {
+    root: '/plantmed',
+    plants: '/plantmed/plants',
+    symptoms: '/plantmed/symptoms',
+    plant: (id) => `/plant/${id}`,
+    symptom: (id) => `/symptom/${id}`,
+    cgu: '/plantmed/cgu',
+    privacy_policy: '/plantmed/privacy-policy',
+  }
 };

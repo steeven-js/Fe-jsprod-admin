@@ -26,8 +26,6 @@ export function PostListHomeView({ posts, loading }) {
 
   const debouncedQuery = useDebounce(searchQuery);
 
-  // const { searchResults, searchLoading } = useSearchPosts(debouncedQuery);
-
   const { searchResults, searchLoading } = useSearchPosts(debouncedQuery);
 
   const dataFiltered = applyFilter({ inputData: posts, sortBy });
