@@ -12,6 +12,7 @@ import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { _socials } from 'src/_mock';
+import { CONFIG } from 'src/config-global';
 
 import { Logo } from 'src/components/logo';
 import { SocialIcon } from 'src/components/iconify';
@@ -144,6 +145,10 @@ export function Footer({ layoutQuery, sx }) {
 // ----------------------------------------------------------------------
 
 export function HomeFooter({ sx }) {
+  const { sitePath } = CONFIG.site;
+
+  console.log(sitePath);
+
   return (
     <Box
       component="footer"
@@ -160,7 +165,7 @@ export function HomeFooter({ sx }) {
         <Box sx={{ mt: 1, typography: 'caption' }}>
           © All rights reserved.
           <br /> made by
-          <Link href="https://minimals.cc/"> minimals.cc </Link>
+          <Link href={sitePath}> jsprod.fr </Link>
         </Box>
       </Container>
     </Box>
