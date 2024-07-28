@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5] - 2024-07-27
+
+### Added
+
+- maj projets
+-
 ## [0.4] - 2024-07-24
 
 ### Added
