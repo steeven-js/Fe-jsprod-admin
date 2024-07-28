@@ -131,7 +131,7 @@ export function NavItemDashboard({ path, sx, ...other }) {
           <Box
             component="img"
             alt="illustration-dashboard"
-            src={`${CONFIG.site.basePath}/assets/illustrations/illustration-dashboard.webp`}
+            src={`${CONFIG.site.basePath}/assets/illustrations/illustration-logo.png`}
             sx={{
               width: 640,
               objectFit: 'cover',
