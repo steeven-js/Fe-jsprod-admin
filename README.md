@@ -1,12 +1,12 @@
 # Changelog
 
-## [0.5] - 2024-07-28
+## [0.5] - 2024-07-29
 
 ### Added
 
-- pages plantmed
-- maj projets
--
+- marketing
+- redux
+
 ## [0.4] - 2024-07-24
 
 ### Added
