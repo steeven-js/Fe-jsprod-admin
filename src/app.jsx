@@ -1,11 +1,14 @@
 import 'src/global.css';
 
+import { Provider } from 'react-redux';
+
 // ----------------------------------------------------------------------
 
 import { Router } from 'src/routes/sections';
 
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 
+import { store } from 'src/store/';
 import { CONFIG } from 'src/config-global';
 import { LocalizationProvider } from 'src/locales';
 import { I18nProvider } from 'src/locales/i18n-provider';
@@ -37,23 +40,25 @@ export default function App() {
   useScrollToTop();
 
   return (
-    <I18nProvider>
-      <LocalizationProvider>
-        <AuthProvider>
-          <SettingsProvider settings={defaultSettings}>
-            <ThemeProvider>
-              <MotionLazy>
-                <CheckoutProvider>
-                  <Snackbar />
-                  <ProgressBar />
-                  <SettingsDrawer />
-                  <Router />
-                </CheckoutProvider>
-              </MotionLazy>
-            </ThemeProvider>
-          </SettingsProvider>
-        </AuthProvider>
-      </LocalizationProvider>
-    </I18nProvider>
+    <Provider store={store}>
+      <I18nProvider>
+        <LocalizationProvider>
+          <AuthProvider>
+            <SettingsProvider settings={defaultSettings}>
+              <ThemeProvider>
+                <MotionLazy>
+                  <CheckoutProvider>
+                    <Snackbar />
+                    <ProgressBar />
+                    <SettingsDrawer />
+                    <Router />
+                  </CheckoutProvider>
+                </MotionLazy>
+              </ThemeProvider>
+            </SettingsProvider>
+          </AuthProvider>
+        </LocalizationProvider>
+      </I18nProvider>
+    </Provider>
   );
 }
