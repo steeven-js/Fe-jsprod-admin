@@ -1,6 +1,7 @@
 // userSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { doc, getDoc } from 'firebase/firestore';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
 import { db } from 'src/utils/firebase';
 
 export const fetchUserData = createAsyncThunk(
@@ -10,9 +11,8 @@ export const fetchUserData = createAsyncThunk(
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       return docSnap.data();
-    } else {
-      throw new Error('Aucun document trouvé !');
     }
+    throw new Error('Aucun document trouvé !');
   }
 );
 
