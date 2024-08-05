@@ -1,4 +1,5 @@
 import 'src/global.css';
+import { Provider } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +25,8 @@ import { AuthProvider as AmplifyAuthProvider } from 'src/auth/context/amplify';
 import { AuthProvider as SupabaseAuthProvider } from 'src/auth/context/supabase';
 import { AuthProvider as FirebaseAuthProvider } from 'src/auth/context/firebase';
 
+import { store } from 'src/redux/store';
+
 // ----------------------------------------------------------------------
 
 const AuthProvider =
@@ -37,23 +40,25 @@ export default function App() {
   useScrollToTop();
 
   return (
-    <I18nProvider>
-      <LocalizationProvider>
-        <AuthProvider>
-          <SettingsProvider settings={defaultSettings}>
-            <ThemeProvider>
-              <MotionLazy>
-                <CheckoutProvider>
-                  <Snackbar />
-                  <ProgressBar />
-                  <SettingsDrawer />
-                  <Router />
-                </CheckoutProvider>
-              </MotionLazy>
-            </ThemeProvider>
-          </SettingsProvider>
-        </AuthProvider>
-      </LocalizationProvider>
-    </I18nProvider>
+    <Provider store={store}>
+      <I18nProvider>
+        <LocalizationProvider>
+          <AuthProvider>
+            <SettingsProvider settings={defaultSettings}>
+              <ThemeProvider>
+                <MotionLazy>
+                  <CheckoutProvider>
+                    <Snackbar />
+                    <ProgressBar />
+                    <SettingsDrawer />
+                    <Router />
+                  </CheckoutProvider>
+                </MotionLazy>
+              </ThemeProvider>
+            </SettingsProvider>
+          </AuthProvider>
+        </LocalizationProvider>
+      </I18nProvider>
+    </Provider>
   );
 }
