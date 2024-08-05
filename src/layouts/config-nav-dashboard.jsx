@@ -72,8 +72,25 @@ export const navData = [
         path: paths.dashboard.post.root,
         icon: ICONS.blog,
         children: [
-          { title: 'List', path: paths.dashboard.post.root },
+          { title: 'Posts', path: paths.dashboard.post.root },
           { title: 'Create', path: paths.dashboard.post.new },
+        ],
+      },
+    ],
+  },
+  /**
+   * Marketings
+   */
+  {
+    subheader: 'marketings',
+    items: [
+      {
+        title: 'Marketings',
+        path: paths.dashboard.marketings.root,
+        icon: ICONS.analytics,
+        children: [
+          { title: 'posts', path: paths.dashboard.marketings.posts },
+          // { title: 'List', path: paths.dashboard.user.list },
         ],
       },
     ],

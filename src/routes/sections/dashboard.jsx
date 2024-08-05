@@ -25,6 +25,8 @@ const BlogPostsPage = lazy(() => import('src/pages/dashboard/post/list'));
 const BlogPostPage = lazy(() => import('src/pages/dashboard/post/details'));
 const BlogNewPostPage = lazy(() => import('src/pages/dashboard/post/new'));
 const BlogEditPostPage = lazy(() => import('src/pages/dashboard/post/edit'));
+// Marketing
+const MarketingsPostsPage = lazy(() => import('src/pages/dashboard/marketings/posts'));
 
 // ----------------------------------------------------------------------
 
@@ -46,8 +48,6 @@ export const dashboardRoutes = [
         path: 'plantmed',
         children: [
           { element: <PlantmedPage />, index: true },
-          // { path: 'marketings', element: <PlantmedPage /> },
-          // { path: 'profile/:id', element: <UserProfilePage /> },
         ],
       },
       {
@@ -66,10 +66,16 @@ export const dashboardRoutes = [
         path: 'post',
         children: [
           { element: <BlogPostsPage />, index: true },
-          { path: 'list', element: <BlogPostsPage /> },
+          { path: 'posts', element: <BlogPostsPage /> },
           { path: ':slug', element: <BlogPostPage /> },
           { path: ':slug/edit', element: <BlogEditPostPage /> },
           { path: 'new', element: <BlogNewPostPage /> },
+        ],
+      },
+      {
+        path: 'marketings',
+        children: [
+          { path: 'posts', element: <MarketingsPostsPage /> },
         ],
       },
     ],
