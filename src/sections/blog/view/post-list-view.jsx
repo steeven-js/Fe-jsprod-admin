@@ -9,8 +9,8 @@ import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { useDebounce } from 'src/hooks/use-debounce';
+import { useSearchPosts } from 'src/hooks/use-posts';
 import { useSetState } from 'src/hooks/use-set-state';
-import { usePosts, useSearchPosts } from 'src/hooks/use-posts';
 
 import { orderBy } from 'src/utils/helper';
 
@@ -27,15 +27,13 @@ import { PostListHorizontal } from '../post-list-horizontal';
 
 // ----------------------------------------------------------------------
 
-export function PostListView({ currentUser }) {
+export function PostListView({ currentUser, posts }) {
   const [sortBy, setSortBy] = useState('latest');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filters = useSetState({ publish: 'all' });
 
   const debouncedQuery = useDebounce(searchQuery);
-
-  const { posts, loading } = usePosts(sortBy, debouncedQuery, filters.state.publish);
 
   const { searchResults, searchLoading } = useSearchPosts(debouncedQuery);
 
@@ -124,7 +122,7 @@ export function PostListView({ currentUser }) {
         ))}
       </Tabs>
 
-      <PostListHorizontal currentUser={currentUser} posts={dataFiltered} loading={loading} />
+      <PostListHorizontal currentUser={currentUser} posts={dataFiltered} />
     </DashboardContent>
   );
 }

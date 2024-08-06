@@ -4,6 +4,7 @@ import {
   endAt,
   query,
   limit,
+  getDocs,
   orderBy,
   startAt,
   collection,
@@ -132,38 +133,36 @@ export function useSearchPosts(searchQuery) {
   const [searchLoading, setSearchLoading] = useState(true);
 
   useEffect(() => {
-    let unsubscribe = () => {};
+    async function fetchPosts() {
+      if (searchQuery) {
+        setSearchLoading(true);
+        const lowercaseQuery = searchQuery.toLowerCase();
 
-    if (searchQuery) {
-      const q = query(
-        collection(db, 'posts'),
-        orderBy('title'),
-        startAt(searchQuery),
-        endAt(`${searchQuery}\uf8ff`),
-        limit(10)
-      );
+        const postsRef = collection(db, 'posts');
+        const q = query(postsRef);
 
-      unsubscribe = onSnapshot(
-        q,
-        (querySnapshot) => {
-          const fetchedPosts = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
+        try {
+          const querySnapshot = await getDocs(q);
+          const fetchedPosts = querySnapshot.docs
+            .map(doc => ({
+              id: doc.id,
+              ...doc.data()
+            }))
+            .filter(post => post.title && post.title.toLowerCase().includes(lowercaseQuery));
+
           setSearchResults(fetchedPosts);
-          setSearchLoading(false);
-        },
-        (error) => {
+        } catch (error) {
           console.error('Error fetching posts:', error);
+        } finally {
           setSearchLoading(false);
         }
-      );
-    } else {
-      setSearchResults([]);
-      setSearchLoading(false);
+      } else {
+        setSearchResults([]);
+        setSearchLoading(false);
+      }
     }
 
-    return () => unsubscribe();
+    fetchPosts();
   }, [searchQuery]);
 
   return { searchResults, searchLoading };

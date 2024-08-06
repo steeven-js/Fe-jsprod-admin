@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useAuth } from 'src/hooks/use-auth';
+import { usePosts } from 'src/hooks/use-posts';
 
 import { CONFIG } from 'src/config-global';
 
@@ -16,6 +17,8 @@ const metadata = { title: `Post list | Dashboard - ${CONFIG.site.name}` };
 export default function Page() {
   const { user, loading } = useAuth();
 
+  const { posts } = usePosts();
+
   return (
     <>
       <Helmet>
@@ -27,7 +30,7 @@ export default function Page() {
           <CircularProgress />
         </Box>
       ) : (
-        <PostListView currentUser={user} />
+        <PostListView currentUser={user} posts={posts} />
       )}
     </>
   );

@@ -38,6 +38,8 @@ export function PostListHomeView({ posts, loading }) {
     setSearchQuery(inputValue);
   }, []);
 
+  console.log('dataFiltered', dataFiltered);
+
   return (
     <Container>
       <Typography variant="h4" sx={{ my: { xs: 3, md: 5 } }}>
