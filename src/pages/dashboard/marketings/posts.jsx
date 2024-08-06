@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
-import { useSelector, useDispatch } from 'react-redux';
 
 import { CONFIG } from 'src/config-global';
-import { fetchUserData } from 'src/store/slices/userSlice';
 
 import { BlankView } from 'src/sections/marketings/view';
 
@@ -12,12 +10,13 @@ import { BlankView } from 'src/sections/marketings/view';
 const metadata = { title: `Marketings Posts | Dashboard - ${CONFIG.site.name}` };
 
 export default function Page() {
-  const dispatch = useDispatch();
+
   const { data: userData, status, error } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    dispatch(fetchUserData('3GnwlLwTtFaTuZJfojJqkUMQRDi1')); // Remplacez par l'ID réel de l'utilisateur
-  }, [dispatch]);
+  const { posts,} = useSelector((state) => state.blog);
+
+  console.log('posts', posts);
+  console.log('userData', userData);
 
   if (status === 'loading') {
     return <div>Chargement...</div>;
@@ -31,12 +30,10 @@ export default function Page() {
     return <div>Aucune donnée utilisateur disponible.</div>;
   }
 
-  console.log('userData', userData);
-
   return (
     <>
       <Helmet>
-        <title> {metadata.title}</title>
+        <title>{metadata.title}</title>
       </Helmet>
 
       <BlankView />

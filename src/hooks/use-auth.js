@@ -1,14 +1,20 @@
+import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { updateProfile, updatePassword, onAuthStateChanged } from 'firebase/auth';
 
 import { db, auth } from 'src/utils/firebase';
 
+import { fetchUserData } from 'src/store/slices/userSlice';
+import { fetchBlogPosts } from 'src/store/slices/blogSlice';
+
 export function useAuth() {
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (_user) => {
@@ -20,6 +26,8 @@ export function useAuth() {
           const userProfileDoc = await getDoc(doc(db, 'users', _user.uid));
           if (userProfileDoc.exists()) {
             setUserProfile(userProfileDoc.data());
+            dispatch(fetchUserData(_user.uid));
+            dispatch(fetchBlogPosts());
           } else {
             console.log("Le profil utilisateur n'existe pas");
           }
@@ -35,7 +43,7 @@ export function useAuth() {
     });
 
     return unsubscribe;
-  }, []);
+  }, [dispatch]);
 
   return { user, userId, userProfile, loading };
 }
