@@ -9,8 +9,8 @@ import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { useDebounce } from 'src/hooks/use-debounce';
-import { useSearchPosts } from 'src/hooks/use-posts';
 import { useSetState } from 'src/hooks/use-set-state';
+import { useSearchMarketingsPosts } from 'src/hooks/use-posts';
 
 import { orderBy } from 'src/utils/helper';
 
@@ -35,7 +35,7 @@ export function PostListView({ posts, isLoading }) {
 
   const debouncedQuery = useDebounce(searchQuery);
 
-  const { searchResults, searchLoading } = useSearchPosts(debouncedQuery);
+  const { searchResults, searchLoading } = useSearchMarketingsPosts(debouncedQuery);
 
   const dataFiltered = applyFilter({ inputData: posts, filters: filters.state, sortBy });
 

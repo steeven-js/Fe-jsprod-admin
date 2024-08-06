@@ -167,3 +167,43 @@ export function useSearchPosts(searchQuery) {
 
   return { searchResults, searchLoading };
 }
+
+export function useSearchMarketingsPosts(searchQuery) {
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      if (searchQuery) {
+        setSearchLoading(true);
+        const lowercaseQuery = searchQuery.toLowerCase();
+
+        const postsRef = collection(db, 'marketings');
+        const q = query(postsRef);
+
+        try {
+          const querySnapshot = await getDocs(q);
+          const fetchedPosts = querySnapshot.docs
+            .map(doc => ({
+              id: doc.id,
+              ...doc.data()
+            }))
+            .filter(post => post.title && post.title.toLowerCase().includes(lowercaseQuery));
+
+          setSearchResults(fetchedPosts);
+        } catch (error) {
+          console.error('Error fetching marketings posts:', error);
+        } finally {
+          setSearchLoading(false);
+        }
+      } else {
+        setSearchResults([]);
+        setSearchLoading(false);
+      }
+    }
+
+    fetchPosts();
+  }, [searchQuery]);
+
+  return { searchResults, searchLoading };
+}
