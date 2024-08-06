@@ -2,6 +2,8 @@ import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
 
+import { useFetchPostBySlug } from 'src/hooks/use-posts';
+
 import { CONFIG } from 'src/config-global';
 
 import { PostEditView } from 'src/sections/blog/view';
