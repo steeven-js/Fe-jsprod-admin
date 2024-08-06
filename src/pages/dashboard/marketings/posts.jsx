@@ -13,7 +13,7 @@ export default function Page() {
 
   const { data: userData, status, error } = useSelector((state) => state.user);
 
-  const { posts,} = useSelector((state) => state.blog);
+  const { posts } = useSelector((state) => state.blog);
 
   console.log('posts', posts);
   console.log('userData', userData);
