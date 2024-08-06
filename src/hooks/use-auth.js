@@ -5,9 +5,6 @@ import { updateProfile, updatePassword, onAuthStateChanged } from 'firebase/auth
 
 import { db, auth } from 'src/utils/firebase';
 
-import { fetchUserData } from 'src/store/slices/userSlice';
-import { fetchBlogPosts } from 'src/store/slices/blogSlice';
-
 export function useAuth() {
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -26,8 +23,6 @@ export function useAuth() {
           const userProfileDoc = await getDoc(doc(db, 'users', _user.uid));
           if (userProfileDoc.exists()) {
             setUserProfile(userProfileDoc.data());
-            dispatch(fetchUserData(_user.uid));
-            dispatch(fetchBlogPosts());
           } else {
             console.log("Le profil utilisateur n'existe pas");
           }

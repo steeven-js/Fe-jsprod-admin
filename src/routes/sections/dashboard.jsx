@@ -26,7 +26,10 @@ const BlogPostPage = lazy(() => import('src/pages/dashboard/post/details'));
 const BlogNewPostPage = lazy(() => import('src/pages/dashboard/post/new'));
 const BlogEditPostPage = lazy(() => import('src/pages/dashboard/post/edit'));
 // Marketing
-const MarketingsPostsPage = lazy(() => import('src/pages/dashboard/marketings/posts'));
+const MarketingsPostsPage = lazy(() => import('src/pages/dashboard/marketings/list'));
+const MarketingsPostPage = lazy(() => import('src/pages/dashboard/marketings/details'));
+const MarketingNewPostPage = lazy(() => import('src/pages/dashboard/marketings/new'));
+const MarketingEditPostPage = lazy(() => import('src/pages/dashboard/marketings/edit'));
 
 // ----------------------------------------------------------------------
 
@@ -75,7 +78,11 @@ export const dashboardRoutes = [
       {
         path: 'marketings',
         children: [
+          { element: <MarketingsPostsPage />, index: true },
           { path: 'posts', element: <MarketingsPostsPage /> },
+          { path: 'post/:slug', element: <MarketingsPostPage /> },
+          { path: 'post/:slug/edit', element: <MarketingEditPostPage /> },
+          { path: 'new', element: <MarketingNewPostPage /> },
         ],
       },
     ],

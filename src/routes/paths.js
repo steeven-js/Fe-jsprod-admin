@@ -126,7 +126,9 @@ export const paths = {
     },
     marketings: {
       root: `${ROOTS.DASHBOARD}/marketings`,
-      posts: `${ROOTS.DASHBOARD}/marketings/posts`,
+      new: `${ROOTS.DASHBOARD}/marketings/new`,
+      details: (slug) => `${ROOTS.DASHBOARD}/marketings/post/${paramCase(slug)}`,
+      edit: (slug) => `${ROOTS.DASHBOARD}/marketings/post/${paramCase(slug)}/edit`,
       customers: `${ROOTS.DASHBOARD}/marketings/customers`,
       campaign: `${ROOTS.DASHBOARD}/marketings/campaign`,
       ad: `${ROOTS.DASHBOARD}/marketings/ad`,
