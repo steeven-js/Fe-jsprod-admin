@@ -53,6 +53,23 @@ export const navData = [
     ],
   },
   /**
+   * Marketings
+   */
+  {
+    subheader: 'marketings',
+    items: [
+      {
+        title: 'Marketings',
+        path: paths.dashboard.marketings.root,
+        icon: ICONS.analytics,
+        children: [
+          { title: 'Posts', path: paths.dashboard.marketings.root },
+          { title: 'Create', path: paths.dashboard.marketings.new },
+        ],
+      },
+    ],
+  },
+  /**
    * Management
    */
   {
@@ -76,23 +93,7 @@ export const navData = [
           { title: 'Create', path: paths.dashboard.post.new },
         ],
       },
-    ],
-  },
-  /**
-   * Marketings
-   */
-  {
-    subheader: 'marketings',
-    items: [
-      {
-        title: 'Marketings',
-        path: paths.dashboard.marketings.root,
-        icon: ICONS.analytics,
-        children: [
-          { title: 'Posts', path: paths.dashboard.marketings.root },
-          { title: 'Create', path: paths.dashboard.marketings.new },
-        ],
-      },
+      { title: 'Calendar', path: paths.dashboard.calendar, icon: ICONS.calendar },
     ],
   },
 ];

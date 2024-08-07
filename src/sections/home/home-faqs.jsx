@@ -69,8 +69,8 @@ const FAQs = [
       'Quels frameworks et bibliothèques utilisez-vous pour le développement web et mobile ?',
     answer: (
       <Typography>
-        Pour le développement web, j'utilise des frameworks comme React.js et Angular. Pour le
-        développement mobile, je travaille avec React Native et Flutter pour créer des applications
+        Pour le développement web, j'utilise des frameworks comme React.js et Laravel. Pour le
+        développement mobile, je travaille avec React Native pour créer des applications
         performantes et cross-platform.
       </Typography>
     ),

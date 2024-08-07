@@ -30,6 +30,8 @@ const MarketingsPostsPage = lazy(() => import('src/pages/dashboard/marketings/li
 const MarketingsPostPage = lazy(() => import('src/pages/dashboard/marketings/details'));
 const MarketingNewPostPage = lazy(() => import('src/pages/dashboard/marketings/new'));
 const MarketingEditPostPage = lazy(() => import('src/pages/dashboard/marketings/edit'));
+// App
+const CalendarPage = lazy(() => import('src/pages/dashboard/calendar'));
 
 // ----------------------------------------------------------------------
 
@@ -85,6 +87,7 @@ export const dashboardRoutes = [
           { path: 'new', element: <MarketingNewPostPage /> },
         ],
       },
+      { path: 'calendar', element: <CalendarPage /> },
     ],
   },
 ];
