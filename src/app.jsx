@@ -1,12 +1,15 @@
 import 'src/global.css';
 import { Provider } from 'react-redux';
 
+import { Provider } from 'react-redux';
+
 // ----------------------------------------------------------------------
 
 import { Router } from 'src/routes/sections';
 
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 
+import { store } from 'src/store/store';
 import { CONFIG } from 'src/config-global';
 import { LocalizationProvider } from 'src/locales';
 import { I18nProvider } from 'src/locales/i18n-provider';

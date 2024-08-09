@@ -13,7 +13,7 @@ import {
 
 import { db } from 'src/utils/firebase';
 
-export function usePosts(sortBy = 'latest', searchQuery = '', publish = 'all') {
+export function useMarketingsPosts(sortBy = 'latest', searchQuery = '', publish = 'all') {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,19 +22,17 @@ export function usePosts(sortBy = 'latest', searchQuery = '', publish = 'all') {
 
     const q = searchQuery
       ? query(
-          collection(db, 'posts'),
+          collection(db, 'marketings'),
           orderBy('title'),
           startAt(searchQuery),
           endAt(`${searchQuery}\uf8ff`),
           limit(10)
         )
       : query(
-          collection(db, 'posts'),
-          ...[
-            orderBy(sortBy === 'popular' ? 'totalViews' : 'createdAt', sortBy === 'oldest' ? 'asc' : 'desc'),
-            limit(20),
-            ...(publish !== 'all' ? [where('publish', '==', publish)] : []),
-          ]
+          collection(db, 'marketings'),
+          orderBy(sortBy === 'popular' ? 'totalViews' : 'createdAt', sortBy === 'oldest' ? 'asc' : 'desc'),
+          ...(publish !== 'all' ? [where('publish', '==', publish)] : []),
+          limit(20)
         );
 
     unsubscribe = onSnapshot(
@@ -48,7 +46,7 @@ export function usePosts(sortBy = 'latest', searchQuery = '', publish = 'all') {
         setLoading(false);
       },
       (error) => {
-        console.error('Error fetching posts:', error);
+        console.error('Erreur lors de la récupération des posts:', error);
         setLoading(false);
       }
     );
@@ -64,7 +62,7 @@ export function useLatestPosts(count = 4) {
   const [latestPostsLoading, setLatestPostsLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(count));
+    const q = query(collection(db, 'marketings'), orderBy('createdAt', 'desc'), limit(count));
 
     const unsubscribe = onSnapshot(
       q,
@@ -77,7 +75,7 @@ export function useLatestPosts(count = 4) {
         setLatestPostsLoading(false);
       },
       (error) => {
-        console.error('Error fetching latest posts:', error);
+        console.error('Erreur lors de la récupération des derniers posts:', error);
         setLatestPostsLoading(false);
       }
     );
@@ -97,7 +95,7 @@ export function useFetchPostBySlug(slug) {
     let unsubscribe = () => {};
 
     if (slug) {
-      const q = query(collection(db, 'posts'), where('slug', '==', slug));
+      const q = query(collection(db, 'marketings'), where('slug', '==', slug));
 
       unsubscribe = onSnapshot(
         q,
@@ -138,46 +136,6 @@ export function useSearchPosts(searchQuery) {
         setSearchLoading(true);
         const lowercaseQuery = searchQuery.toLowerCase();
 
-        const postsRef = collection(db, 'posts');
-        const q = query(postsRef);
-
-        try {
-          const querySnapshot = await getDocs(q);
-          const fetchedPosts = querySnapshot.docs
-            .map(doc => ({
-              id: doc.id,
-              ...doc.data()
-            }))
-            .filter(post => post.title && post.title.toLowerCase().includes(lowercaseQuery));
-
-          setSearchResults(fetchedPosts);
-        } catch (error) {
-          console.error('Error fetching posts:', error);
-        } finally {
-          setSearchLoading(false);
-        }
-      } else {
-        setSearchResults([]);
-        setSearchLoading(false);
-      }
-    }
-
-    fetchPosts();
-  }, [searchQuery]);
-
-  return { searchResults, searchLoading };
-}
-
-export function useSearchMarketingsPosts(searchQuery) {
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchLoading, setSearchLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchPosts() {
-      if (searchQuery) {
-        setSearchLoading(true);
-        const lowercaseQuery = searchQuery.toLowerCase();
-
         const postsRef = collection(db, 'marketings');
         const q = query(postsRef);
 
@@ -192,7 +150,7 @@ export function useSearchMarketingsPosts(searchQuery) {
 
           setSearchResults(fetchedPosts);
         } catch (error) {
-          console.error('Error fetching marketings posts:', error);
+          console.error('Erreur lors de la recherche des posts:', error);
         } finally {
           setSearchLoading(false);
         }

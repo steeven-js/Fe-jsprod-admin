@@ -20,6 +20,8 @@ const swrOptions = {
 export function useGetEvents() {
   const { data, isLoading, error, isValidating } = useSWR(CALENDAR_ENDPOINT, fetcher, swrOptions);
 
+  console.log('data', data);
+
   const memoizedValue = useMemo(() => {
     const events = data?.events.map((event) => ({
       ...event,

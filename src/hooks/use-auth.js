@@ -1,3 +1,4 @@
+import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { updateProfile, updatePassword, onAuthStateChanged } from 'firebase/auth';
@@ -9,6 +10,8 @@ export function useAuth() {
   const [userId, setUserId] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (_user) => {
@@ -35,7 +38,7 @@ export function useAuth() {
     });
 
     return unsubscribe;
-  }, []);
+  }, [dispatch]);
 
   return { user, userId, userProfile, loading };
 }

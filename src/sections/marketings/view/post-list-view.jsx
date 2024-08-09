@@ -9,8 +9,8 @@ import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { useDebounce } from 'src/hooks/use-debounce';
-import { useSearchPosts } from 'src/hooks/use-posts';
 import { useSetState } from 'src/hooks/use-set-state';
+import { useSearchMarketingsPosts } from 'src/hooks/use-posts';
 
 import { orderBy } from 'src/utils/helper';
 
@@ -27,7 +27,7 @@ import { PostListHorizontal } from '../post-list-horizontal';
 
 // ----------------------------------------------------------------------
 
-export function PostListView({ currentUser, posts }) {
+export function PostListView({ posts, isLoading }) {
   const [sortBy, setSortBy] = useState('latest');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -35,7 +35,7 @@ export function PostListView({ currentUser, posts }) {
 
   const debouncedQuery = useDebounce(searchQuery);
 
-  const { searchResults, searchLoading } = useSearchPosts(debouncedQuery);
+  const { searchResults, searchLoading } = useSearchMarketingsPosts(debouncedQuery);
 
   const dataFiltered = applyFilter({ inputData: posts, filters: filters.state, sortBy });
 
@@ -60,7 +60,7 @@ export function PostListView({ currentUser, posts }) {
         heading="List"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'Blog', href: paths.dashboard.post.root },
+          { name: 'Posts', href: paths.dashboard.marketings.root },
           { name: 'List' },
         ]}
         action={
@@ -88,7 +88,7 @@ export function PostListView({ currentUser, posts }) {
           results={searchResults}
           onSearch={handleSearch}
           loading={searchLoading}
-          hrefItem={(slug) => paths.dashboard.post.details(slug)}
+          hrefItem={(slug) => paths.dashboard.marketings.details(slug)}
         />
 
         <PostSort sort={sortBy} onSort={handleSortBy} sortOptions={POST_SORT_OPTIONS} />
@@ -122,7 +122,7 @@ export function PostListView({ currentUser, posts }) {
         ))}
       </Tabs>
 
-      <PostListHorizontal currentUser={currentUser} posts={dataFiltered} />
+      <PostListHorizontal posts={dataFiltered} isLoading={isLoading} />
     </DashboardContent>
   );
 }
